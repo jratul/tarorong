@@ -197,6 +197,24 @@ const showResult = () => {
 }
 ```
 
+### `guide.tsx` — 타로 기초
+
+목차는 앵커 링크(`#history` 등)이고, 섹션에 `scroll-mt-22`를 줘서 고정 헤더 아래로 정확히 멈춘다. 모바일 목차는 줄바꿈 없는
+한 줄 가로 스크롤이다. 칩이 여러 줄로 감기면 웹폰트가 늦게 적용될 때 줄 수가 바뀌어 본문 전체가 밀렸다(CLS 0.26 → 0.04).
+수트·숫자·궁정 카드·스프레드는 실제 데이터(`SUITS`, `NUMBER_MEANINGS`, `SPREADS`, 별 카드 의미)를 그대로 보여줘서 앱 내용과 어긋나지 않는다.
+
+```tsx
+<ol className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-none lg:mx-0 lg:flex-col lg:gap-1 lg:px-0">
+  {GUIDE_SECTIONS.map((section, i) => (
+    <li key={section.id}>
+      <a href={`#${section.id}`} className="block rounded-full … whitespace-nowrap">…</a>
+    </li>
+  ))}
+</ol>
+
+<section id={id} aria-labelledby={`${id}-title`} className="flex scroll-mt-22 flex-col gap-4">
+```
+
 ### `result.tsx` — 결과
 
 쿼리를 해석해 잘못됐으면 안내 화면, 맞으면 `ReadingView`. 쿼리가 바뀌면 `key`로 다시 마운트해 뒤집기 상태를 초기화한다.
@@ -704,6 +722,20 @@ export const COMBOS: ComboRule[] = [
   // …
 ]
 export const NUMBER_MEANINGS: Record<number, string> = { 1: '시작', 2: '선택과 균형', /* … */ 10: '끝과 새 시작' }
+```
+
+### `data/guide.ts` — 타로 기초 콘텐츠
+
+목차, 유래 연표, 궁정 카드 설명, 역방향 읽는 법, 질문 바꾸기 예시. 역사는 널리 받아들여지는 사실 위주로 쓰고,
+근거 없는 설(고대 이집트 기원)은 설이라고 밝힌다.
+
+```ts
+export const HISTORY: HistoryEvent[] = [
+  { era: '1440년대', title: '이탈리아 귀족들의 카드놀이', text: '…비스콘티-스포르차 카드가…' },
+  { era: '1781년', title: '신비로운 해석이 시작되다', text: '…역사적 근거는 없는 설이지만…' },
+  { era: '1909년', title: '오늘날 타로의 표준이 된 덱', text: '…' },
+]
+export const QUESTION_TIPS = [{ bad: '그 사람이 나를 좋아해?', good: '그 사람과 더 가까워지려면 내가 뭘 해볼까?' }]
 ```
 
 ### `data/nav.ts` — 메뉴 항목

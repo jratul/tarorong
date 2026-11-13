@@ -21,12 +21,13 @@ export default {
     '/cards',
     ...CARDS.map((card) => `/cards/${card.id}`),
     '/draw',
+    '/guide',
     ...SPREADS.map((spread) => `/draw/${spread.id}`),
   ],
 } satisfies Config
 ```
 
-빌드 결과: `build/client`에 HTML 85개 + prerender하지 않은 경로(결과 화면)용 `__spa-fallback.html`.
+빌드 결과: `build/client`에 HTML 86개 + prerender하지 않은 경로(결과 화면)용 `__spa-fallback.html`.
 
 ### `vite.config.ts` — 빌드
 

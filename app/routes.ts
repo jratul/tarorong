@@ -6,6 +6,7 @@ export default [
     route('cards', 'routes/cards.tsx'),
     route('cards/:id', 'routes/card-detail.tsx'),
     route('draw/:spread?', 'routes/draw.tsx'),
+    route('guide', 'routes/guide.tsx'),
     route('result', 'routes/result.tsx'),
   ]),
 ] satisfies RouteConfig

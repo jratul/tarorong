@@ -113,9 +113,10 @@
 
 - `react-router.config.ts`: `ssr: false` + prerender 목록
   - `/`, `/cards`, `/cards/:id` 78장
+  - `/guide` 타로 기초
   - `/draw`, `/draw/:spread` 4개 — 뽑기 화면은 카드 **뒷면만** 보여서 덱이 무작위여도 HTML이 항상 같다
   - `/result?…`만 SPA (쿼리마다 내용이 다름)
-  - 빌드하면 `build/client`에 HTML 85개 + SPA용 `__spa-fallback.html`이 생긴다
+  - 빌드하면 `build/client`에 HTML 86개 + SPA용 `__spa-fallback.html`이 생긴다
 - 스프레드는 **경로**(`/draw/celtic`)로 받는다. 쿼리(`?spread=`)로 받으면 prerender된 HTML이 하나뿐이라
   직접 접속 시 hydration 불일치가 생긴다
 - 런타임 비용은 없다. 각 페이지가 내용이 채워진 HTML로 먼저 오니까 첫 화면(FCP/LCP)과
@@ -133,13 +134,14 @@
 
 ## 6. 화면과 기능
 
-| 경로                     | 화면      | 내용                                                                                                           |
-| ------------------------ | --------- | -------------------------------------------------------------------------------------------------------------- |
-| `/`                      | 홈        | 롱이 인사, 오늘의 카드(기기·날짜 시드), 스프레드 목록, 면책 문구                                               |
-| `/cards`                 | 도감      | 78장 그리드, 필터(전체/메이저/수트 4종, 개수), 이름·키워드 검색. 필터 안에서 못 찾으면 "전체에서 찾아보기"     |
-| `/cards/:id`             | 카드 상세 | 정/역방향 토글, 원소·별자리·숫자, 키워드, 설명, 상황별 의미, 외우는 팁, 이전/다음, 확대 라이트박스(←/→·휠·Esc) |
-| `/draw`, `/draw/:spread` | 뽑기      | 스프레드 칩, 주제, 질문(선택, 100자), 역방향 포함 토글, 부채꼴 덱에서 고르기(다시 누르면 취소), 다시 섞기      |
-| `/result?s=&t=&c=&q=`    | 결과      | 카드 탭해서 뒤집기 / 모두 뒤집기 → 자리별 해석, 다 뒤집으면 롱이의 한마디 + 태그, 다시 뽑기, 링크 복사         |
+| 경로                     | 화면      | 내용                                                                                                               |
+| ------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------ |
+| `/`                      | 홈        | 롱이 인사, 오늘의 카드(기기·날짜 시드), 스프레드 목록, 면책 문구                                                   |
+| `/cards`                 | 도감      | 78장 그리드, 필터(전체/메이저/수트 4종, 개수), 이름·키워드 검색. 필터 안에서 못 찾으면 "전체에서 찾아보기"         |
+| `/cards/:id`             | 카드 상세 | 정/역방향 토글, 원소·별자리·숫자, 키워드, 설명, 상황별 의미, 외우는 팁, 이전/다음, 확대 라이트박스(←/→·휠·Esc)     |
+| `/draw`, `/draw/:spread` | 뽑기      | 스프레드 칩, 주제, 질문(선택, 100자), 역방향 포함 토글, 부채꼴 덱에서 고르기(다시 누르면 취소), 다시 섞기          |
+| `/guide`                 | 타로 기초 | 목차(웹 고정 / 모바일 가로 스크롤), 유래 연표, 78장 구성(수트·숫자·궁정), 바보의 여정, 정/역방향, 스프레드, 질문법 |
+| `/result?s=&t=&c=&q=`    | 결과      | 카드 탭해서 뒤집기 / 모두 뒤집기 → 자리별 해석, 다 뒤집으면 롱이의 한마디 + 태그, 다시 뽑기, 링크 복사             |
 
 - **오늘의 카드**: 첫 방문 때 `crypto.randomUUID()`로 기기 시드를 만들어 localStorage(`tarorong:device-seed`)에 저장하고,
   `시드 + 날짜(한국 시간)`로 카드와 방향을 정한다
@@ -250,10 +252,10 @@ export interface ComboRule {
 ```
 app/
   root.tsx              <html> 레이아웃, 메타, 폰트 비동기 로드, ScrollRestoration, HydrateFallback, ErrorBoundary
-  routes.ts             라우트 정의 (layout 아래 home, cards, cards/:id, draw/:spread?, result)
+  routes.ts             라우트 정의 (layout 아래 home, cards, cards/:id, draw/:spread?, guide, result)
   app.css               Tailwind + 디자인 토큰(@theme) + 전역 CSS
   fonts.css             웹폰트 @font-face (비동기 로드용으로 분리)
-  routes/               layout, home, cards, card-detail, draw, result
+  routes/               layout, home, cards, card-detail, draw, guide, result
   components/
     layout/             AppNav (웹 상단 / 모바일 햄버거)
     card/               TarotCardFace, CardBack, FlipCard, Lightbox
@@ -262,7 +264,7 @@ app/
     reading/            SpreadItem, CardFan, SpreadSlots, ReadingItemCard(OrientationBadge), CelticLayout, LongiSummary
   hooks/                useMenuToggle, useCardFilter, useDailyCard, useDraw, useFlips
   utils/                formatNumber, meta, random, seededRandom, dailyCard, readingQuery, interpret, searchCards, josa
-  data/                 cards, nav, spreads, combos, meanings/(define, major, wands, cups, swords, pentacles, index)
+  data/                 cards, nav, spreads, combos, guide, meanings/(define, major, wands, cups, swords, pentacles, index)
   models/               card, reading
 public/
   cards/                카드 일러스트 SVG 78장 + back.svg (생성물, 직접 수정 금지 → scripts/cards 수정 후 npm run cards)
@@ -333,7 +335,11 @@ scripts/
   `D:/`와 `d:/`로 이중 로드해 모든 테스트가 `Cannot read properties of undefined (reading 'config')`로 깨진다
 - **화면 확인 방법**: Edge 헤드리스 `--screenshot`은 창 폭이 최소 504px로 그려진다(390px 지정해도 504px).
   클릭이 필요한 흐름·모바일 폭은 Edge를 `--remote-debugging-port`로 띄우고 puppeteer-core로 `connect`해서 확인한다
-  (`puppeteer.launch`는 이 환경에서 Edge가 바로 종료됨). 부채꼴 카드는 겹쳐 있어 좌표 클릭 대신 `el.click()`으로 누른다
+  (`puppeteer.launch`는 이 환경에서 Edge가 바로 종료됨). 부채꼴 카드는 겹쳐 있어 좌표 클릭 대신 `el.click()`으로 누른다.
+  Bash에서 `node -e "…"`는 `=>`의 `>`, 백틱이 셸에 먹혀 조용히 실패하니 확인용 스크립트는 파일로 만들어 실행한다
+- **폰트 교체로 인한 레이아웃 이동(CLS)**: 폰트가 비동기라 처음엔 시스템 폰트로 그려졌다가 바뀐다. 글자 폭에 따라 **줄 수가 바뀌는
+  칩 묶음**(flex-wrap)이 본문 위에 있으면 본문이 통째로 밀린다(타로 기초 목차에서 CLS 0.26). 모바일 칩 줄은 `flex-wrap` 대신
+  한 줄 가로 스크롤 + `whitespace-nowrap`으로 높이를 고정한다
 - **React Hooks 린트(React Compiler 규칙)**: 이벤트 리스너에 최신 props가 필요하면 `useCallback` 의존성 대신
   `useEffectEvent`를 쓴다(`Lightbox.tsx`). effect 안에서 동기 `setState`도 금지라, 브라우저 전용 값은 `useSyncExternalStore`로 읽는다
 

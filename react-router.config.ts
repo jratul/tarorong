@@ -13,6 +13,7 @@ export default {
     '/cards',
     ...CARDS.map((card) => `/cards/${card.id}`),
     '/draw',
+    '/guide',
     ...SPREADS.map((spread) => `/draw/${spread.id}`),
   ],
 } satisfies Config

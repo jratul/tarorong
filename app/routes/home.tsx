@@ -84,6 +84,12 @@ export default function Home() {
             <SpreadItem key={spread.id} spread={spread} />
           ))}
         </div>
+        <Link
+          to="/guide"
+          className="mt-1 flex items-center justify-between rounded-[22px] border border-dashed border-gold/40 px-3.5 py-2.5 text-sm text-cream/85 hover:text-gold"
+        >
+          타로가 처음이라면? 타로 기초 알아보기 <span aria-hidden="true">›</span>
+        </Link>
         <p className="mt-2 text-xs leading-relaxed text-cream/50">
           타로롱의 해석은 재미와 마음 정리를 위한 거야. 중요한 결정은 너의 생각을 가장 믿어줘.
         </p>

@@ -39,8 +39,11 @@ export default function Cards() {
             </Chip>
           ))}
         </div>
-        <div className="hidden lg:block">
+        <div className="hidden flex-col gap-3 lg:flex">
           <LongiGuide>카드를 누르면 정방향·역방향 의미를 자세히 볼 수 있어!</LongiGuide>
+          <Link to="/guide" className="text-sm text-pink hover:text-gold">
+            메이저·마이너가 뭔지 궁금하다면? 타로 기초 ›
+          </Link>
         </div>
       </aside>
 
