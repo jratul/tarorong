@@ -379,16 +379,33 @@ export function Panel({ soft = false, as: Tag = 'section', className = '', ...re
 }
 ```
 
-### `longi/Longi.tsx` — 마스코트 롱이 (CSS 도형)
+### `longi/Longi.tsx` — 마스코트 롱이 (SVG 일러스트)
 
-모든 치수가 롱이 자신의 너비 기준(%, `cqw`)이라 크기만 바꿔도 비율이 유지된다.
+별빛을 머금은 노란 젤리를 인라인 SVG로 그린다. 이미지 파일이 아니라 컴포넌트라 `mood`로 표정을 바꿀 수 있고 어떤 크기에서도 선명하다.
+그라디언트 id는 `useId()`로 만들어, 한 화면에 롱이가 여러 개 있어도 서로의 그라디언트를 덮어쓰지 않는다.
 
 ```tsx
-<span aria-hidden="true" className={`@container relative block aspect-[1/0.94] ${SIZE[size]}`}>
-  <span className="absolute inset-x-[7%] top-[9%] bottom-0 rounded-[50%_50%_46%_46%] bg-gold shadow-glow-gold" />
-  <span className={`absolute left-[33%] w-[7.5%] rounded-full bg-ink ${eye}`} />
-  <span className="absolute top-[-6%] left-[63%] font-display text-[21cqw] text-sky">✦</span>
-</span>
+export type LongiMood = 'smile' | 'happy' | 'sleepy' | 'wink' | 'surprised'
+
+export function Longi({ size = 'md', mood = 'smile', className = '' }: Props) {
+  const id = useId()
+  const body = `${id}-body`
+  return (
+    <svg
+      viewBox="0 0 120 112"
+      aria-hidden="true"
+      className={`block shrink-0 overflow-visible ${SIZE[size]} ${className}`}
+    >
+      <defs>
+        <linearGradient id={body} x1="0" y1="0" x2="0" y2="1">
+          …
+        </linearGradient>
+      </defs>
+      <path d="M14,102 C8,60 30,18 60,18 C90,18 112,60 106,102 Q60,113 14,102Z" fill={`url(#${body})`} />
+      <Face mood={mood} />
+    </svg>
+  )
+}
 ```
 
 ### `longi/LongiGuide.tsx` — 말풍선 / 롱이 안내

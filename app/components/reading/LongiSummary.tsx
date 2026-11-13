@@ -7,7 +7,7 @@ export function LongiSummary({ summary }: { summary: ReadingSummary }) {
   return (
     <Panel className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
-        <Longi size="sm" />
+        <Longi size="sm" mood="wink" />
         <SectionTitle>롱이의 한마디</SectionTitle>
       </div>
       {summary.lines.map((line) => (

@@ -55,7 +55,7 @@ export default function Home() {
     <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-10">
       <section className="flex flex-col gap-6">
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          <Longi size="lg" />
+          <Longi size="lg" mood="happy" />
           <div className="flex flex-col gap-3">
             <h1 className="font-display text-[clamp(32px,4.4vw,52px)] leading-tight">
               안녕, 별빛 친구!
