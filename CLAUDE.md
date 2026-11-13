@@ -1,8 +1,10 @@
 # 타로롱 (tarorong)
 
 타로카드 78장의 정보를 찾아보고, 실제로 스프레드를 골라 카드를 뽑아볼 수 있는 웹 앱.
+마스코트 **롱이**가 친근한 말투로 안내하고 해석해 준다.
 
 > 이 문서는 프로젝트 계획서 겸 작업 가이드다. 구현이 진행되면 실제 코드 상태에 맞게 갱신한다.
+> 아직 개발 전 — 계획 확정 단계. 미결정 항목은 [10. 미결정 사항](#10-미결정-사항) 참고.
 
 ---
 
@@ -10,150 +12,227 @@
 
 | 영역 | 선택 | 비고 |
 | --- | --- | --- |
-| 프레임워크 | React 19 + TypeScript | |
+| 프레임워크 | React 19 + TypeScript | Next.js는 쓰지 않는다 |
 | 빌드 | Vite | |
-| 스타일 | Tailwind CSS v4 | `@tailwindcss/vite` 플러그인, CSS 엔트리 `src/styles/index.css` |
-| 라우팅 | React Router | SPA → `vercel.json` rewrites 필수 |
-| UI | mokona-ui (검토) | 쓰면 CDN 폰트 `@import` 제거 플러그인 + Dialog 중앙정렬 우회 적용 |
-| 애니메이션 | CSS 3D transform (카드 뒤집기) | 필요하면 framer-motion |
-| 상태 저장 | localStorage | 뽑기 기록, 설정 |
+| 라우팅 | React Router v7 (framework mode, `ssr: false`) | 카드 상세 78장 등을 빌드 시 **prerender** (확정 대기, 5절) |
+| 스타일 | Tailwind CSS v4 | `@tailwindcss/vite`, 시안 토큰을 `@theme`으로 이식 |
+| 폰트 | Jua(제목) / Gowun Dodum(본문) / DM Mono(숫자·날짜) | Google Fonts `<link>` 대신 `@fontsource/*`로 **자체 호스팅**(렌더 블로킹 금지) |
+| 애니메이션 | CSS transform/transition | 부채꼴·뒤집기·셔플. 부족하면 framer-motion |
+| 상태 저장 | **없음** | 리딩 기록·설정을 저장하지 않는다. 접속할 때마다 새로 뽑는다 |
 | 품질 | ESLint(flat config) + Prettier | 전역 룰 1번 기준 그대로 |
+| 테스트 | Vitest | 셔플, 해석 조합 로직 단위 테스트 |
 | 배포 | Vercel | 정적 빌드 |
-| PWA | 2차 목표 | 넣으면 `sw.js` 캐시 헤더 필수 |
 
 ---
 
-## 2. 카드 이미지 출처
+## 2. 디자인 — "밤하늘 젤리"
+
+시안은 `.ref/`(로컬 전용, git 제외)에 있다. HTML/CSS 정적 마크업이며 **모바일 우선**,
+`min-width: 1024px`(Tailwind `lg`)부터 웹 레이아웃으로 바뀐다.
+
+- **토큰** (`.ref/css/tokens.css` → `src/styles/index.css`의 `@theme`)
+  - 배경 `#1e1a3a` / 깊은 배경 `#0f0c22` / 표면 `#2c2652` / 텍스트 `#f6f1ff`
+  - 젤리 포인트: gold `#ffe9a6` · pink `#ffc7e3` · rose `#ffb1d6` · sky `#b9e6ff` · lilac `#e6dcff`
+  - 밝은 젤리 위 텍스트는 항상 ink `#1e1a3a`
+  - 반경 12~32px + pill, 글로우 그림자(gold/pink), 배경에 별 점 패턴
+  - 카드 비율 3:5
+- **네비게이션**: 웹은 상단 `topnav`, 모바일은 **하단 고정 탭바** + 페이지별 `m-header`(뒤로가기)
+- **마스코트 롱이**: 지금은 CSS 도형으로 만든 임시 버전 → 나중에 일러스트로 교체. `<Longi size mood />`
+- **컴포넌트 매핑**: `.ref/README.md`의 "클래스 → React 컴포넌트 제안" 표를 따른다
+  (`Button`, `Chip`, `Segmented`, `Longi`, `SpeechBubble`, `TarotCard`, `SpreadItem`, `Keyword`, `CardFan` …)
+- **말투**: 반말, 친근하게. "별빛 친구", "~해봐", "~일 거야". 모든 해석 텍스트도 같은 톤.
+
+---
+
+## 3. 카드 이미지 출처
 
 **1909년판 라이더-웨이트-스미스(RWS) 덱 원본 스캔**을 사용한다.
 
-- 일러스트레이터 Pamela Colman Smith(1951년 사망) 작품으로, 1909년 출간본은 **퍼블릭 도메인**이다
-  (미국은 1909년 출판물이라 PD, 사후 70년 기준 국가에서도 2022년부터 PD).
-- 출처: **Wikimedia Commons** — `Category:Rider-Waite tarot deck (Roses & Lilies)` 등에 78장 전체 스캔이
-  있다. 파일명 예: `RWS Tarot 01 Magician.jpg`, `Wands01.jpg`, `Cups10.jpg`.
+- 일러스트레이터 Pamela Colman Smith(1951년 사망) 작품으로, 1909년 출간본은 **퍼블릭 도메인**이다.
+- 출처: **Wikimedia Commons**의 78장 전체 스캔(예: `RWS Tarot 01 Magician.jpg`, `Cups10.jpg`).
 - 주의사항
-  - 1971년 이후 U.S. Games Systems의 **재채색판**은 저작권이 따로 있으니 쓰지 않는다. 반드시 1909년
-    원본 스캔만 쓴다.
-  - "Rider-Waite"는 U.S. Games의 **상표**라서 앱 이름·브랜딩에는 쓰지 않는다. 출처 표기는
-    "Pamela Colman Smith, 1909 (Public Domain)"처럼 한다.
-  - 이미지는 핫링크하지 않고 **다운로드해서 직접 호스팅**한다(`public/cards/`).
-    - `scripts/download-cards.mjs`로 받고, `sharp`로 WebP 변환 + 리사이즈(썸네일 / 상세용 2가지).
-    - 파일명 규칙: `major-00-fool.webp`, `wands-01-ace.webp`, `cups-14-king.webp` …
-- 카드 뒷면: 직접 SVG로 그린다(저작권 이슈 없음, 앱 브랜드 컬러 반영).
-
-카드 **의미 텍스트**는 A.E. Waite의 『The Pictorial Key to the Tarot』(1911, 퍼블릭 도메인)를 기반으로
-한국어로 직접 정리해 `src/data/`에 넣는다. 외부 API에 의존하지 않는다.
+  - 1971년 이후 U.S. Games Systems의 **재채색판**은 저작권이 따로 있으니 쓰지 않는다.
+  - "Rider-Waite"는 상표이므로 앱 이름·브랜딩에 쓰지 않는다. 출처 표기는
+    "Pamela Colman Smith, 1909 (Public Domain)".
+  - 핫링크하지 않고 `scripts/download-cards.mjs`로 받아 `sharp`로 WebP 변환(썸네일/상세 2가지)해
+    `public/cards/`에 둔다. 파일명: `major-00-fool.webp`, `cups-14-king.webp` …
+- 카드 뒷면은 시안 톤(☾ + 젤리 컬러)으로 직접 SVG를 그린다.
+- 시안의 `.tcard__art` 자리에 들어간다. 고전 그림과 젤리 톤을 어떻게 어울리게 할지는 10절 참고.
 
 ---
 
-## 3. 기능 범위
+## 4. 해석 방식 — 조각 조합 + 규칙 기반 요약
 
-### 1차 (MVP)
-1. **카드 도감** (`/cards`)
-   - 78장 그리드: 메이저 아르카나 22장 + 마이너 56장(완드·컵·소드·펜타클 각 14장)
-   - 필터(전체/메이저/수트별), 이름·키워드 검색
-   - 그리드는 `auto-fill + minmax()` 컨테이너 기준 반응형, 썸네일은 padding-percentage 트릭(카드 비율 약 1:1.71)
-2. **카드 상세** (`/cards/:id`)
-   - 큰 이미지 + 확대보기 라이트박스(방향키/휠로 이전·다음, `createPortal`)
-   - 정방향/역방향 의미, 키워드, 원소·점성술 대응, 숫자/궁정 카드 설명
-   - 이전/다음 카드 이동
-3. **타로 뽑기** (`/reading`)
-   - 스프레드 선택: 원 카드 / 쓰리 카드(과거·현재·미래) / 켈틱 크로스(10장)
-   - 질문 입력(선택) → 셔플 애니메이션 → 펼쳐진 덱에서 직접 카드 선택 → 하나씩 뒤집기
-   - 역방향 포함 여부 옵션(기본 50% 확률)
-   - 결과 화면: 자리별 의미 + 카드 의미 요약, 각 카드 상세로 이동
-   - 셔플은 `crypto.getRandomValues` 기반 Fisher–Yates
-4. **오늘의 카드** (홈 `/`)
-   - 날짜 기반 시드로 하루 동안 같은 카드가 나오도록
+카드 조합마다 해석을 미리 다 써두는 건 불가능하다. 3장 스프레드만 해도 순서·방향을 포함해
+**약 365만 가지**(78×77×76×2³)이고, 켈틱 크로스(10장)는 사실상 무한대다.
+그래서 해석을 **조각 단위로 작성하고 조합**한다.
 
-### 2차
-- 뽑기 기록(`/history`): localStorage에 저장, 날짜/질문/결과 다시 보기
-- 결과 이미지로 저장·공유
-- 다크 모드
-- PWA(홈 화면 설치)
-- 추가 스프레드(관계 스프레드, 예/아니오 등)
+1. **카드 조각** (78장 × 정/역): 한 줄 요약, 키워드, 기본 설명,
+   **주제별 의미(연애 / 일 / 금전 / 조언)**, 외우는 팁(도감용)
+2. **자리 조각** (스프레드 자리별): "과거", "장애물" 같은 자리 설명과 그 자리에서 카드를 읽는 관점
+3. **롱이의 한마디** (전체 요약): 뽑힌 카드들을 보고 규칙으로 생성한다
+   - 메이저 비율이 높으면 → "인생의 큰 흐름이 움직이는 시기"
+   - 많이 나온 수트 → 완드 = 열정·행동, 컵 = 감정·관계, 소드 = 생각·갈등, 펜타클 = 현실·돈
+   - 역방향 비율이 높으면 → 막힘, 내면 점검
+   - 궁정 카드가 많으면 → 주변 사람의 영향
+   - 같은 숫자 반복 → 그 숫자의 의미 강조
+   - **특별 조합 테이블**: 유명한 조합(탑→별, 연인+컵2 등)은 문장을 따로 써둔다(수십 개)
+   - 마지막 자리(미래/결과) 카드의 "조언" 문장으로 마무리
+   - 요약 태그 = 뽑힌 카드들의 상위 키워드
+4. 질문 내용 자체를 이해하지는 못한다는 게 한계다. AI 해석은 지금은 하지 않는다.
+
+**주제**: 뽑기 전에 종합 / 연애 / 일 / 금전 중 하나를 고른다. 연애운 스프레드는 자동으로 연애.
+
+**콘텐츠 분량**: 78장 × 2방향 × (기본 + 4주제) ≈ **780단락** + 키워드·팁.
+Waite 원전(1911, 퍼블릭 도메인)의 의미를 바탕으로 Claude가 친근한 말투로 초안을 쓰고 사용자가 검수한다.
+메이저 22장을 먼저 끝내고 마이너로 넘어간다.
 
 ---
 
-## 4. 데이터 모델 (초안)
+## 5. 렌더링 — React Router prerender (Next.js 없이)
+
+- React Router v7 framework mode는 Vite 플러그인 기반이라 Next.js 없이 쓸 수 있다.
+  `react-router.config.ts`에서 `ssr: false` + `prerender: [...]`로 지정한 경로만 빌드 시 HTML로 미리 만든다.
+- 대상: `/`, `/cards`, `/cards/:id` 78장. `/draw`, `/result`는 SPA 그대로.
+- 성능 영향: **런타임 비용은 없다.** 각 페이지가 내용이 채워진 HTML로 먼저 오니까 첫 화면(FCP/LCP)과
+  SEO는 오히려 좋아진다. 비용은 빌드 시간이 조금 늘고 HTML 파일이 80개쯤 생기는 정도.
+- 주의
+  - 랜덤 뽑기, 오늘 날짜 같은 값은 빌드 시점에 굳으면 안 되므로 **클라이언트에서만**(`useEffect` 이후) 계산한다.
+  - `vercel.json` rewrite는 prerender된 파일을 우선 쓰고 나머지만 SPA fallback(`__spa-fallback.html`)으로 보낸다.
+
+---
+
+## 6. 화면과 기능
+
+| 경로 | 화면 | 내용 |
+| --- | --- | --- |
+| `/` | 홈 | 롱이 인사, 오늘의 카드, 스프레드 목록, 뽑기/도감 바로가기 |
+| `/cards` | 도감 | 78장 그리드, 필터(전체/메이저/수트 4종, 개수 표시), 이름·키워드 검색 |
+| `/cards/:id` | 카드 상세 | 큰 카드 + 정/역방향 토글, 원소·별자리·숫자, 키워드, 기본 설명, 주제별 의미, 롱이의 외우는 팁, 이전/다음 카드, 확대 라이트박스 |
+| `/draw` | 뽑기 | 스프레드 칩, 주제, 질문(선택), 역방향 포함 토글, 부채꼴 덱에서 카드 고르기, 다시 섞기 |
+| `/result` | 결과 | 카드 뒤집기 연출 → 자리별 해석 → 롱이의 한마디 + 태그 → 다시 뽑기 |
+
+- 스프레드: 원카드(1) / 쓰리카드(과거·현재·미래) / 연애운(나·상대·관계) / 켈틱 크로스(10)
+- 셔플: `crypto.getRandomValues` 기반 Fisher–Yates (시안의 `sort(() => Math.random() - .5)`는 치우치므로 쓰지 않는다)
+- 역방향: 카드 180° 회전 + "역방향" 배지
+- `prefers-reduced-motion`이면 셔플·뒤집기 애니메이션을 줄인다
+- **저장 기능 없음** → 시안의 기록 탭, `/history`, "기록에 저장", 메모, 최근 리딩은 빼고 구현
+
+### 뽑기 UX (초안)
+1. 스프레드·주제 선택 → 짧은 셔플 연출(카드가 모였다가 펼쳐짐)
+2. 섞은 덱 중 일부를 부채꼴로 펼친다(원/쓰리카드는 15장, 켈틱 크로스는 22장 정도). 고른 카드는 위로 떠오르고 슬롯에 뒷면으로 들어간다
+3. 다 고르면 "결과 보기" → 결과 화면에서 **한 장씩 탭해서 뒤집기**(또는 "모두 뒤집기")
+4. 켈틱 크로스 결과
+   - 웹: 실제 십자 + 기둥 배치도 + 옆에 해석 목록
+   - 모바일: 작은 배치도(현재 자리 하이라이트) + 세로 해석 목록
+5. 결과는 URL 쿼리에 담는다(예: `/result?s=three&t=love&c=major-16,major-17r,cups-03`).
+   저장이 아니라서 새로고침해도 결과가 유지되고, 링크를 공유할 수도 있다
+
+---
+
+## 7. 데이터 모델 (초안)
 
 ```ts
 // src/models/card.ts
 export type Arcana = 'major' | 'minor'
 export type Suit = 'wands' | 'cups' | 'swords' | 'pentacles'
+export type Topic = 'general' | 'love' | 'work' | 'money'
+
+export interface CardSide {
+  summary: string                     // 한 줄 요약
+  keywords: string[]
+  description: string                 // 기본 설명
+  topics: Record<'love' | 'work' | 'money' | 'advice', string>
+}
 
 export interface TarotCard {
   id: string            // 'major-00-fool', 'cups-14-king'
   arcana: Arcana
-  suit?: Suit           // 마이너만
-  number: number        // 메이저 0~21, 마이너 1~14 (11~14 = 페이지/나이트/퀸/킹)
-  nameKo: string        // '바보'
-  nameEn: string        // 'The Fool'
-  image: string         // '/cards/major-00-fool.webp'
-  keywords: { upright: string[]; reversed: string[] }
-  meaning: { upright: string; reversed: string }
-  description: string   // 그림 묘사·상징
+  suit?: Suit
+  number: number        // 메이저 0~21, 마이너 1~14 (11~14 = 시종/기사/여왕/왕)
+  numeral: string       // 'XVII', 'A', 'Kn' …
+  nameKo: string
+  nameEn: string
+  image: string
   element?: string
   astrology?: string
+  upright: CardSide
+  reversed: CardSide
+  tip?: string          // 롱이의 외우는 팁
 }
 
 // src/models/spread.ts
 export interface SpreadPosition { key: string; label: string; description: string }
-export interface Spread { id: string; name: string; positions: SpreadPosition[] }
+export interface Spread { id: string; name: string; desc: string; jelly: string; fanSize: number; positions: SpreadPosition[] }
 
 // src/models/reading.ts
-export interface DrawnCard { cardId: string; position: string; reversed: boolean }
-export interface Reading { id: string; spreadId: string; question?: string; cards: DrawnCard[]; createdAt: string }
+export interface DrawnCard { cardId: string; positionKey: string; reversed: boolean }
+export interface Reading { spreadId: string; topic: Topic; question?: string; cards: DrawnCard[] }
+
+// src/data/combos.ts — 특별 조합
+export interface ComboRule { cards: string[]; ordered?: boolean; text: string }
 ```
 
 ---
 
-## 5. 디렉토리 구조 (예정)
+## 8. 디렉토리 구조 (예정)
 
 ```
-src/
+app/                    React Router framework mode
+  root.tsx, routes.ts
+  routes/               home, cards, card-detail, draw, result
   components/
-    layout/      RootLayout, Nav(모바일 햄버거), ScrollToTop
-    card/        CardImage, CardThumbnail, CardBack, FlipCard, Lightbox
-    reading/     SpreadPicker, ShuffleDeck, SpreadBoard, ReadingResult
-  pages/         HomePage, CardsPage, CardDetailPage, ReadingPage, HistoryPage
-  hooks/         useCardFilter, useReading, useDailyCard, useHistory
-  utils/         shuffle, seededRandom, formatNumber
-  data/          majorArcana.ts, minorArcana.ts, spreads.ts
-  models/        card.ts, spread.ts, reading.ts
-  styles/        index.css
-public/
-  cards/         카드 이미지(WebP)
-  favicon.svg
-scripts/
-  download-cards.mjs, generate-icons.mjs
+    layout/             AppNav(상단/하단 탭바), MobileHeader, ScrollToTop
+    ui/                 Button, Chip, Segmented, Keyword, SpeechBubble, Panel
+    longi/              Longi, LongiGuide
+    card/               TarotCard, CardBack, CardImage, Lightbox
+    reading/            SpreadItem, CardFan, SpreadSlots, CelticLayout, ReadingItem, LongiSummary
+  hooks/                useCardFilter, useDraw, useReadingParams, useDailyCard
+  utils/                shuffle, seededRandom, interpret, readingQuery, formatNumber
+  data/                 major/*.ts, minor/*.ts, spreads.ts, combos.ts
+  models/               card.ts, spread.ts, reading.ts
+  styles/               index.css (토큰 @theme)
+public/cards/           카드 이미지(WebP)
+scripts/                download-cards.mjs, generate-icons.mjs
 ```
 
-컴포넌트는 렌더링만 담당하고, 뽑기 로직·필터링·저장은 hooks/utils로 분리한다.
+컴포넌트는 렌더링만 담당하고, 뽑기·해석 조합·필터링은 hooks/utils로 분리한다.
 
 ---
 
-## 6. 작업 순서
+## 9. 작업 순서
 
-1. **스캐폴딩**: Vite + React + TS, Tailwind v4, React Router, ESLint/Prettier 일체, `.editorconfig`/
-   `.gitattributes`/`.vscode`, `vercel.json`, 파비콘(카드/별 모양 SVG), git 초기화 + 원격 연결
-2. **이미지 파이프라인**: Wikimedia Commons에서 78장 다운로드 → WebP 변환 스크립트, 카드 뒷면 SVG
-3. **데이터**: 78장 한국어 데이터 작성(메이저 먼저 → 마이너), 스프레드 정의
-4. **도감**: 목록·필터·검색 → 상세 → 라이트박스
-5. **뽑기**: 스프레드 선택 → 셔플/선택/뒤집기 애니메이션 → 결과
-6. **홈**: 오늘의 카드 + 진입 버튼
-7. **마무리**: 반응형 점검, Lighthouse 100 목표, 배포
-8. 2차 기능
+1. **스캐폴딩**: React Router framework mode(Vite) + TS, Tailwind v4, 폰트 자체 호스팅, ESLint/Prettier 일체,
+   `.editorconfig`/`.gitattributes`/`.vscode`, `vercel.json`, 파비콘(☾ 젤리)
+2. **디자인 시스템**: 토큰 이식, 공통 UI 컴포넌트, 롱이(임시 CSS), 레이아웃(상단 nav/하단 탭바)
+3. **이미지 파이프라인**: 78장 다운로드 → WebP, 카드 뒷면 SVG
+4. **데이터**: 메이저 22장 콘텐츠 → 사용자 검수 → 마이너 56장, 스프레드, 특별 조합
+5. **도감**: 목록·필터·검색 → 상세 → 라이트박스 (prerender 확인)
+6. **뽑기**: 스프레드/주제 → 셔플·부채꼴 선택 → 결과(뒤집기, 해석 조합, 켈틱 배치)
+7. **홈**: 오늘의 카드 + 스프레드 진입
+8. **마무리**: 반응형 점검, Lighthouse 100 목표, 배포
 
 ---
 
-## 7. 프로젝트 규칙 메모
+## 10. 미결정 사항
+
+- [ ] RWS 고전 그림을 젤리 톤 카드 프레임에 어떻게 넣을지 (그대로 / 둥근 프레임+테두리 글로우 / 나중에 자체 일러스트)
+- [ ] 카드 비율: 시안 3:5 vs RWS 원본 약 1:1.71 — 프레임 안에 여백을 줄지, 비율을 원본에 맞출지
+- [ ] 시안의 저장 기반 요소: 도감 "공부 완료" 진행률·반짝 점, 즐겨찾기 ♡ — 뺄지, 이것만 localStorage로 둘지
+- [ ] 오늘의 카드: 하루 동안 고정(날짜 시드) vs 접속할 때마다 랜덤
+- [ ] prerender 도입 최종 확정
+- [ ] 모바일 네비: 전역 룰 7번은 햄버거 메뉴지만, 시안은 하단 탭바 → 시안 따름(가로 메뉴가 모바일에서 깨지는 걸 막는다는 룰의 목적은 충족)
+
+---
+
+## 11. 프로젝트 규칙 메모
 
 - 전역 규칙(`~/.claude/CLAUDE.md`)을 그대로 따른다. 특히:
   - lint Error 0 / Warning 0, `format:check`, `tsc` 통과
   - 수치는 3자리 콤마(`formatNumber`)
   - `html { scrollbar-gutter: stable }`, 버튼 `cursor: pointer` 전역 CSS
-  - 라우트 이동 시 `ScrollToTop`, 모바일 햄버거 네비
-  - 모달/라이트박스는 `createPortal`
-- 카드 이미지는 `loading="lazy"` + 명시적 width/height(또는 비율 박스)로 CLS 방지
-- 페이지 전환 애니메이션을 넣을 경우 fixed 오버레이 위치 문제 주의(전역 룰 13번)
+  - 라우트 이동 시 `ScrollToTop`
+  - 모달/라이트박스는 `createPortal`, 방향키·휠 이동
+- 커밋 author는 jratul만. `Co-Authored-By` 넣지 않는다.
+- `.ref/`는 디자인 시안(로컬 전용) — git에 올리지 않는다.
+- 카드 이미지는 `loading="lazy"` + 비율 박스로 CLS 방지
