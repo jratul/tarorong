@@ -5,7 +5,7 @@ export default [
     index('routes/home.tsx'),
     route('cards', 'routes/cards.tsx'),
     route('cards/:id', 'routes/card-detail.tsx'),
-    route('draw', 'routes/draw.tsx'),
+    route('draw/:spread?', 'routes/draw.tsx'),
     route('result', 'routes/result.tsx'),
   ]),
 ] satisfies RouteConfig

@@ -1,0 +1,6 @@
+/* 웹폰트 @font-face 모음. 한글 폰트는 글자 범위별 조각이 많아 CSS만 200KB가 넘으므로
+   메인 CSS와 분리해 비동기로 붙인다(root.tsx). 그동안은 font-display: swap으로 시스템 폰트가 보인다. */
+@import '@fontsource/jua';
+@import '@fontsource/gowun-dodum';
+@import '@fontsource/dm-mono/400.css';
+@import '@fontsource/dm-mono/500.css';

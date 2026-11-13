@@ -2,10 +2,12 @@
 //   1) 파일이 있으면 그대로   2) 폴더면 그 안의 index.html(prerender된 페이지)
 //   3) 둘 다 없으면 __spa-fallback.html (SPA 라우트)
 // vite preview는 /cards 같은 prerender 경로에 루트 index.html을 내줘서 화면이 두 겹으로 그려진다.
+// Lighthouse를 로컬에서 재도 배포 환경과 비슷하도록 gzip 압축과 vercel.json의 캐시 헤더도 흉내 낸다.
 import { createServer } from 'node:http'
 import { createReadStream, existsSync, statSync } from 'node:fs'
 import { dirname, extname, join, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { createGzip } from 'node:zlib'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../build/client')
 const port = Number(process.env.PORT ?? 4173)
@@ -19,7 +21,9 @@ const TYPES = {
   '.woff2': 'font/woff2',
   '.woff': 'font/woff',
   '.json': 'application/json',
+  '.txt': 'text/plain; charset=utf-8',
 }
+const COMPRESSIBLE = new Set(['.html', '.js', '.css', '.svg', '.json', '.txt'])
 
 function resolveFile(urlPath) {
   const safe = normalize(decodeURIComponent(urlPath)).replace(/^([/\\])+/, '')
@@ -31,12 +35,26 @@ function resolveFile(urlPath) {
   return join(root, '__spa-fallback.html')
 }
 
+function cacheControl(urlPath) {
+  if (urlPath.startsWith('/assets/')) return 'public, max-age=31536000, immutable'
+  if (urlPath.startsWith('/cards/') && urlPath.endsWith('.svg')) return 'public, max-age=86400'
+  return 'public, max-age=0, must-revalidate'
+}
+
 createServer((req, res) => {
-  const file = resolveFile(new URL(req.url ?? '/', 'http://localhost').pathname)
+  const urlPath = new URL(req.url ?? '/', 'http://localhost').pathname
+  const file = resolveFile(urlPath)
   if (!file) {
     res.writeHead(400).end()
     return
   }
-  res.writeHead(200, { 'Content-Type': TYPES[extname(file)] ?? 'application/octet-stream' })
-  createReadStream(file).pipe(res)
+  const ext = extname(file)
+  const gzip = COMPRESSIBLE.has(ext) && /\bgzip\b/.test(req.headers['accept-encoding'] ?? '')
+  res.writeHead(200, {
+    'Content-Type': TYPES[ext] ?? 'application/octet-stream',
+    'Cache-Control': cacheControl(urlPath),
+    ...(gzip ? { 'Content-Encoding': 'gzip', Vary: 'Accept-Encoding' } : {}),
+  })
+  const stream = createReadStream(file)
+  ;(gzip ? stream.pipe(createGzip()) : stream).pipe(res)
 }).listen(port, () => console.log(`preview: http://localhost:${port}`))

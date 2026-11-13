@@ -2,11 +2,16 @@ import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration }
 
 import type { Route } from './+types/root'
 import './app.css'
+import fontsHref from './fonts.css?url'
 
 export const links: Route.LinksFunction = () => [
   { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
   { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 ]
+
+// 폰트 CSS는 첫 화면을 막지 않게 media="print"(가장 낮은 우선순위)로 받고, 다 받으면 화면에 적용한다.
+// preload를 걸면 최우선 리소스가 되어 첫 화면이 늦어지므로 쓰지 않는다. JS가 꺼져 있으면 <noscript>로 붙인다.
+const loadFonts = `(function(){var l=document.createElement('link');l.rel='stylesheet';l.media='print';l.href=${JSON.stringify(fontsHref)};l.onload=function(){l.media='all'};document.head.appendChild(l)})()`
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -17,6 +22,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="theme-color" content="#1e1a3a" />
         <Meta />
         <Links />
+        <script dangerouslySetInnerHTML={{ __html: loadFonts }} />
+        <noscript>
+          <link rel="stylesheet" href={fontsHref} />
+        </noscript>
       </head>
       <body>
         {children}
@@ -30,6 +39,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return <Outlet />
+}
+
+// prerender하지 않는 화면(뽑기·결과)의 SPA 폴백 HTML에 들어가는 첫 화면. JS가 오기 전에도 헤더와 안내가 먼저 보인다.
+export function HydrateFallback() {
+  return (
+    <>
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-night/85">
+        <div className="mx-auto flex h-16 max-w-300 items-center px-4">
+          <a href="/" className="font-display text-2xl text-gold">
+            타로롱 <span className="text-sky">☾</span>
+          </a>
+        </div>
+      </header>
+      <main className="flex flex-col items-center gap-3 px-4 pt-24 text-center">
+        <p className="font-display text-xl text-gold">별을 불러오는 중…</p>
+        <p className="text-sm text-cream/60">롱이가 카드를 준비하고 있어.</p>
+      </main>
+    </>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
