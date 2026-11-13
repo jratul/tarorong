@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "react-router dev",
+    "dev": "node scripts/with-upper-drive.mjs react-router dev",
     "build": "react-router build",
     "preview": "node scripts/preview.mjs",
     "typecheck": "react-router typegen && tsc",

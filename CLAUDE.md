@@ -27,7 +27,7 @@
 
 | 명령                              | 설명                                                                            |
 | --------------------------------- | ------------------------------------------------------------------------------- |
-| `npm run dev`                     | 개발 서버                                                                       |
+| `npm run dev`                     | 개발 서버 (http://localhost:5173, `scripts/with-upper-drive.mjs`로 감싸 실행)   |
 | `npm run build`                   | 프로덕션 빌드 + prerender (`build/client`)                                      |
 | `npm run preview`                 | 빌드 결과를 **Vercel과 같은 규칙**으로 띄우는 로컬 서버 (`scripts/preview.mjs`) |
 | `npm run typecheck`               | 라우트 타입 생성 + `tsc`                                                        |
@@ -283,6 +283,9 @@ scripts/
 - 카드 이미지는 `loading="lazy"` + `width`/`height` 지정으로 CLS 방지. 첫 화면의 큰 카드는 `priority`
 - 카드 프레임 안쪽 여백·글자 크기는 `%` padding을 쓰지 않는다. `%` padding은 **부모 너비** 기준이라 작은 카드에서
   여백이 카드보다 커져 그림이 사라진다(샘플 미리보기에서 실제로 겪음). `TarotCardFace`처럼 `@container` + `cqw`로 계산한다
+- **`npm run dev`는 `scripts/with-upper-drive.mjs`로 감싸 실행한다**: Windows에서 셸 경로가 소문자 드라이브(`d:\`)면
+  `react-router dev`가 모든 페이지에 404(`Cannot GET /`)를 낸다. 작업 경로와 PATH(`node_modules\.bin`)의 드라이브 문자를
+  대문자로 바꿔 실행한다. 작업 경로만 바꾸면 소용없고 PATH까지 바꿔야 한다(실제로 확인함)
 - **Vitest는 `pool: 'vmThreads'`**: Windows에서 셸 경로가 소문자 드라이브(`d:\`)면 기본 풀이 vitest 모듈을
   `D:/`와 `d:/`로 이중 로드해 모든 테스트가 `Cannot read properties of undefined (reading 'config')`로 깨진다
 - **Edge 헤드리스로 화면 캡처할 때 창 폭은 최소 504px**로 그려진다. 390px로 지정해도 504px로 렌더링하고 잘라서 찍으니

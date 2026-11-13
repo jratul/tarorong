@@ -445,6 +445,21 @@ function resolveFile(urlPath) {
 }
 ```
 
+### `scripts/with-upper-drive.mjs` — `npm run dev` 래퍼 (Windows 드라이브 대소문자)
+
+Windows에서 셸 경로가 소문자 드라이브(`d:\`)면 `react-router dev`가 모든 페이지에 404(`Cannot GET /`)를 낸다.
+작업 경로만 대문자로 바꾸면 소용이 없었다. npm이 PATH에 넣은 `node_modules\.bin`도 소문자라
+`react-router` 실행 파일 자체가 소문자 경로로 실행되기 때문이다. 그래서 둘 다 바꿔서 실행한다.
+
+```js
+const upperDrive = (p) => p.replace(/^[a-z]:/, (drive) => drive.toUpperCase())
+const cwd = upperDrive(process.cwd())
+const pathKey = Object.keys(process.env).find((key) => key.toUpperCase() === 'PATH') ?? 'PATH'
+const env = { ...process.env, [pathKey]: (process.env[pathKey] ?? '').split(delimiter).map(upperDrive).join(delimiter) }
+
+const child = spawn(process.argv.slice(2).join(' '), { cwd, env, stdio: 'inherit', shell: true })
+```
+
 ### `scripts/generate-icons.mjs` — 아이콘 생성
 
 ```js
