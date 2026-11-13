@@ -256,3 +256,6 @@ scripts/                download-cards.mjs, generate-icons.mjs
 - 커밋 author는 jratul만. `Co-Authored-By` 넣지 않는다.
 - `.ref/`는 디자인 시안(로컬 전용) — git에 올리지 않는다.
 - 카드 이미지는 `loading="lazy"` + 비율 박스로 CLS 방지
+- 카드 프레임 안쪽 여백·글자 크기는 `%` padding을 쓰지 않는다. `%` padding은 **부모 너비** 기준이라 작은 카드에서
+  여백이 카드보다 커져 그림이 사라진다(샘플 미리보기에서 실제로 겪음). 카드 자신 기준인 컨테이너 쿼리 단위(`cqw`)나
+  카드 너비 변수로 계산한다
