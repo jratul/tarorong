@@ -1,0 +1,64 @@
+@import '@fontsource/jua';
+@import '@fontsource/gowun-dodum';
+@import '@fontsource/dm-mono/400.css';
+@import '@fontsource/dm-mono/500.css';
+@import 'tailwindcss';
+
+/* 밤하늘 젤리 디자인 토큰 (.ref/css/tokens.css 기준) */
+@theme {
+  --color-night: #1e1a3a;
+  --color-night-deep: #0f0c22;
+  --color-surface: #2c2652;
+  --color-cream: #f6f1ff;
+  --color-ink: #1e1a3a;
+  --color-gold: #ffe9a6;
+  --color-pink: #ffc7e3;
+  --color-rose: #ffb1d6;
+  --color-sky: #b9e6ff;
+  --color-lilac: #e6dcff;
+
+  --font-display: 'Jua', ui-sans-serif, sans-serif;
+  --font-sans: 'Gowun Dodum', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, monospace;
+
+  --shadow-glow-gold: 0 0 28px rgb(255 233 166 / 0.42);
+  --shadow-glow-pink: 0 0 22px rgb(255 199 227 / 0.45);
+  --shadow-float: 0 10px 30px rgb(0 0 0 / 0.3);
+}
+
+html {
+  scrollbar-gutter: stable;
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle, rgb(255 255 255 / 0.45) 1px, transparent 1.5px) 0 0 / 46px 46px,
+    radial-gradient(circle, rgb(255 233 166 / 0.55) 1.2px, transparent 1.8px) 22px 26px / 80px 80px,
+    var(--color-night);
+  background-attachment: fixed;
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+button:disabled,
+[role='button'][aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+::selection {
+  background: var(--color-pink);
+  color: var(--color-ink);
+}
