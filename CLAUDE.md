@@ -10,18 +10,18 @@
 
 ## 1. 기술 스택
 
-| 영역 | 선택 | 비고 |
-| --- | --- | --- |
-| 프레임워크 | React 19 + TypeScript | Next.js는 쓰지 않는다 |
-| 빌드 | Vite | |
-| 라우팅 | React Router v7 (framework mode, `ssr: false`) | 카드 상세 78장 등을 빌드 시 **prerender** (확정 대기, 5절) |
-| 스타일 | Tailwind CSS v4 | `@tailwindcss/vite`, 시안 토큰을 `@theme`으로 이식 |
-| 폰트 | Jua(제목) / Gowun Dodum(본문) / DM Mono(숫자·날짜) | Google Fonts `<link>` 대신 `@fontsource/*`로 **자체 호스팅**(렌더 블로킹 금지) |
-| 애니메이션 | CSS transform/transition | 부채꼴·뒤집기·셔플. 부족하면 framer-motion |
-| 상태 저장 | **오늘의 카드 시드 1개만** (localStorage) | 리딩 기록·설정은 저장하지 않는다. 접속할 때마다 새로 뽑는다 |
-| 품질 | ESLint(flat config) + Prettier | 전역 룰 1번 기준 그대로 |
-| 테스트 | Vitest | 셔플, 해석 조합 로직 단위 테스트 |
-| 배포 | Vercel | 정적 빌드 |
+| 영역       | 선택                                               | 비고                                                                           |
+| ---------- | -------------------------------------------------- | ------------------------------------------------------------------------------ |
+| 프레임워크 | React 19 + TypeScript                              | Next.js는 쓰지 않는다                                                          |
+| 빌드       | Vite                                               |                                                                                |
+| 라우팅     | React Router v7 (framework mode, `ssr: false`)     | 카드 상세 78장 등을 빌드 시 **prerender** (확정 대기, 5절)                     |
+| 스타일     | Tailwind CSS v4                                    | `@tailwindcss/vite`, 시안 토큰을 `@theme`으로 이식                             |
+| 폰트       | Jua(제목) / Gowun Dodum(본문) / DM Mono(숫자·날짜) | Google Fonts `<link>` 대신 `@fontsource/*`로 **자체 호스팅**(렌더 블로킹 금지) |
+| 애니메이션 | CSS transform/transition                           | 부채꼴·뒤집기·셔플. 부족하면 framer-motion                                     |
+| 상태 저장  | **오늘의 카드 시드 1개만** (localStorage)          | 리딩 기록·설정은 저장하지 않는다. 접속할 때마다 새로 뽑는다                    |
+| 품질       | ESLint(flat config) + Prettier                     | 전역 룰 1번 기준 그대로                                                        |
+| 테스트     | Vitest                                             | 셔플, 해석 조합 로직 단위 테스트                                               |
+| 배포       | Vercel                                             | 정적 빌드                                                                      |
 
 ---
 
@@ -119,10 +119,10 @@ Waite 원전(1911, 퍼블릭 도메인)의 의미를 바탕으로 Claude가 친�
 
 ## 6. 화면과 기능
 
-| 경로 | 화면 | 내용 |
-| --- | --- | --- |
-| `/` | 홈 | 롱이 인사, 오늘의 카드, 스프레드 목록, 뽑기/도감 바로가기 |
-| `/cards` | 도감 | 78장 그리드, 필터(전체/메이저/수트 4종, 개수 표시), 이름·키워드 검색 |
+| 경로         | 화면      | 내용                                                                                                                          |
+| ------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `/`          | 홈        | 롱이 인사, 오늘의 카드, 스프레드 목록, 뽑기/도감 바로가기                                                                     |
+| `/cards`     | 도감      | 78장 그리드, 필터(전체/메이저/수트 4종, 개수 표시), 이름·키워드 검색                                                          |
 | `/cards/:id` | 카드 상세 | 큰 카드 + 정/역방향 토글, 원소·별자리·숫자, 키워드, 기본 설명, 주제별 의미, 롱이의 외우는 팁, 이전/다음 카드, 확대 라이트박스 |
 
 - **오늘의 카드**: 첫 방문 때 랜덤 숫자 하나(`deviceSeed`)를 만들어 localStorage에 저장하고,
@@ -131,8 +131,8 @@ Waite 원전(1911, 퍼블릭 도메인)의 의미를 바탕으로 Claude가 친�
   - 사용자에게 아무것도 입력받지 않는다. 저장하는 건 이 숫자 하나뿐이다(리딩 기록 등은 저장하지 않음)
   - localStorage를 못 쓰는 환경(시크릿 모드 등)에서는 날짜만으로 시드를 정한다
   - 빌드 시점에 굳지 않도록 브라우저에서 계산한다
-| `/draw` | 뽑기 | 스프레드 칩, 주제, 질문(선택), 역방향 포함 토글, 부채꼴 덱에서 카드 고르기, 다시 섞기 |
-| `/result` | 결과 | 카드 뒤집기 연출 → 자리별 해석 → 롱이의 한마디 + 태그 → 다시 뽑기 |
+    | `/draw` | 뽑기 | 스프레드 칩, 주제, 질문(선택), 역방향 포함 토글, 부채꼴 덱에서 카드 고르기, 다시 섞기 |
+    | `/result` | 결과 | 카드 뒤집기 연출 → 자리별 해석 → 롱이의 한마디 + 태그 → 다시 뽑기 |
 
 - 스프레드: 원카드(1) / 쓰리카드(과거·현재·미래) / 연애운(나·상대·관계) / 켈틱 크로스(10)
 - 셔플: `crypto.getRandomValues` 기반 Fisher–Yates (시안의 `sort(() => Math.random() - .5)`는 치우치므로 쓰지 않는다)
@@ -142,6 +142,7 @@ Waite 원전(1911, 퍼블릭 도메인)의 의미를 바탕으로 Claude가 친�
   도감 "공부 완료" 진행률·반짝 점, 즐겨찾기 ♡는 모두 빼고 구현
 
 ### 뽑기 UX (초안)
+
 1. 스프레드·주제 선택 → 짧은 셔플 연출(카드가 모였다가 펼쳐짐)
 2. 섞은 덱 중 일부를 부채꼴로 펼친다(원/쓰리카드는 15장, 켈틱 크로스는 22장 정도). 고른 카드는 위로 떠오르고 슬롯에 뒷면으로 들어간다
 3. 다 고르면 "결과 보기" → 결과 화면에서 **한 장씩 탭해서 뒤집기**(또는 "모두 뒤집기")
@@ -162,18 +163,18 @@ export type Suit = 'wands' | 'cups' | 'swords' | 'pentacles'
 export type Topic = 'general' | 'love' | 'work' | 'money'
 
 export interface CardSide {
-  summary: string                     // 한 줄 요약
+  summary: string // 한 줄 요약
   keywords: string[]
-  description: string                 // 기본 설명
+  description: string // 기본 설명
   topics: Record<'love' | 'work' | 'money' | 'advice', string>
 }
 
 export interface TarotCard {
-  id: string            // 'major-00-fool', 'cups-14-king'
+  id: string // 'major-00-fool', 'cups-14-king'
   arcana: Arcana
   suit?: Suit
-  number: number        // 메이저 0~21, 마이너 1~14 (11~14 = 시종/기사/여왕/왕)
-  numeral: string       // 'XVII', 'A', 'Kn' …
+  number: number // 메이저 0~21, 마이너 1~14 (11~14 = 시종/기사/여왕/왕)
+  numeral: string // 'XVII', 'A', 'Kn' …
   nameKo: string
   nameEn: string
   image: string
@@ -181,19 +182,43 @@ export interface TarotCard {
   astrology?: string
   upright: CardSide
   reversed: CardSide
-  tip?: string          // 롱이의 외우는 팁
+  tip?: string // 롱이의 외우는 팁
 }
 
 // src/models/spread.ts
-export interface SpreadPosition { key: string; label: string; description: string }
-export interface Spread { id: string; name: string; desc: string; jelly: string; fanSize: number; positions: SpreadPosition[] }
+export interface SpreadPosition {
+  key: string
+  label: string
+  description: string
+}
+export interface Spread {
+  id: string
+  name: string
+  desc: string
+  jelly: string
+  fanSize: number
+  positions: SpreadPosition[]
+}
 
 // src/models/reading.ts
-export interface DrawnCard { cardId: string; positionKey: string; reversed: boolean }
-export interface Reading { spreadId: string; topic: Topic; question?: string; cards: DrawnCard[] }
+export interface DrawnCard {
+  cardId: string
+  positionKey: string
+  reversed: boolean
+}
+export interface Reading {
+  spreadId: string
+  topic: Topic
+  question?: string
+  cards: DrawnCard[]
+}
 
 // src/data/combos.ts — 특별 조합
-export interface ComboRule { cards: string[]; ordered?: boolean; text: string }
+export interface ComboRule {
+  cards: string[]
+  ordered?: boolean
+  text: string
+}
 ```
 
 ---

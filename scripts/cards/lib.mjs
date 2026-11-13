@@ -72,7 +72,8 @@ export const g = (x, y, inner, { rot = 0, s = 1, flip = false } = {}) =>
   `<g transform="${t(x, y, rot, s, flip)}">${inner}</g>`
 
 // ---------- 지형 ----------
-export const ground = (y, fill, d = 16) => `<path d="M0,${y} Q128,${y - d} ${W},${y} L${W},${H} L0,${H}Z" fill="${fill}"/>`
+export const ground = (y, fill, d = 16) =>
+  `<path d="M0,${y} Q128,${y - d} ${W},${y} L${W},${H} L0,${H}Z" fill="${fill}"/>`
 export const sea = (y, fill = C.skyD) =>
   `<path d="M0,${y} Q32,${y - 6} 64,${y} T128,${y} T192,${y} T256,${y} L256,${H} L0,${H}Z" fill="${fill}"/>` +
   `<path d="M30,${y + 26} q12,-5 24,0 M170,${y + 40} q12,-5 24,0" stroke="#fff" stroke-width="2" fill="none" opacity=".5" stroke-linecap="round"/>`
@@ -102,7 +103,12 @@ export const sunRays = (x, y, r, n = 16, fill = C.gold) => {
   return `<path d="${p}" fill="${fill}"/>`
 }
 export const moonCrescent = (x, y, r, rot = 0, fill = C.gold) =>
-  g(x, y, `<path d="M0,${-r} A${r},${r} 0 1,0 0,${r} A${r * 0.78},${r * 0.86} 0 1,1 0,${-r}Z" fill="${fill}" stroke="${C.goldD}" stroke-width="2"/>`, { rot })
+  g(
+    x,
+    y,
+    `<path d="M0,${-r} A${r},${r} 0 1,0 0,${r} A${r * 0.78},${r * 0.86} 0 1,1 0,${-r}Z" fill="${fill}" stroke="${C.goldD}" stroke-width="2"/>`,
+    { rot },
+  )
 export const star = (x, y, s = 1, fill = C.gold, glow = false) =>
   `<use href="#s8" transform="${t(x, y, 0, s)}" fill="${fill}"${glow ? ' filter="url(#glow)"' : ''}/>`
 export const spark = (x, y, s = 1, fill = '#fff') => `<use href="#spark" transform="${t(x, y, 0, s)}" fill="${fill}"/>`
@@ -178,7 +184,10 @@ const ARMS = {
 const EYE = (x, y) =>
   `<circle cx="${x}" cy="${y}" r="3.8" fill="${C.ink}"/><circle cx="${x + 1.2}" cy="${y - 1.2}" r="1.2" fill="#fff"/>`
 const FACES = {
-  smile: EYE(-11, -50) + EYE(11, -50) + `<path d="M-5,-41 q5,5 10,0" stroke="${C.ink}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
+  smile:
+    EYE(-11, -50) +
+    EYE(11, -50) +
+    `<path d="M-5,-41 q5,5 10,0" stroke="${C.ink}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
   happy:
     `<path d="M-17,-49 q6,-7 12,0 M5,-49 q6,-7 12,0" stroke="${C.ink}" stroke-width="2.8" fill="none" stroke-linecap="round"/>` +
     `<path d="M-7,-42 q7,8 14,0Z" fill="${C.ink}"/>`,
@@ -223,13 +232,34 @@ const FACES = {
     `<path d="M-2,-40 l2,-4 l2,4Z" fill="${C.ink}"/><path d="M-10,-33 h20 M-6,-36 v6 M0,-36 v6 M6,-36 v6" stroke="${C.ink}" stroke-width="1.8" stroke-linecap="round"/>`,
   back: '',
 }
-export function jelly(x, y, { s = 1, color = 'pink', face = 'smile', rot = 0, flip = false, arms = null, feet = true, blush = true, under = '', acc = '', over = '' } = {}) {
+export function jelly(
+  x,
+  y,
+  {
+    s = 1,
+    color = 'pink',
+    face = 'smile',
+    rot = 0,
+    flip = false,
+    arms = null,
+    feet = true,
+    blush = true,
+    under = '',
+    acc = '',
+    over = '',
+  } = {},
+) {
   const [c, d] = JC[color] ?? [color, color]
   const armList = typeof arms === 'string' ? ARMS[arms] : arms
   const armSvg = (armList ?? [])
-    .map(([ax, ay, ar]) => `<ellipse cx="${ax}" cy="${ay}" rx="11" ry="7" fill="${c}" stroke="${d}" stroke-width="2" transform="rotate(${ar} ${ax} ${ay})"/>`)
+    .map(
+      ([ax, ay, ar]) =>
+        `<ellipse cx="${ax}" cy="${ay}" rx="11" ry="7" fill="${c}" stroke="${d}" stroke-width="2" transform="rotate(${ar} ${ax} ${ay})"/>`,
+    )
     .join('')
-  const feetSvg = feet ? `<ellipse cx="-17" cy="0" rx="12" ry="6" fill="${d}"/><ellipse cx="17" cy="0" rx="12" ry="6" fill="${d}"/>` : ''
+  const feetSvg = feet
+    ? `<ellipse cx="-17" cy="0" rx="12" ry="6" fill="${d}"/><ellipse cx="17" cy="0" rx="12" ry="6" fill="${d}"/>`
+    : ''
   const body = `<path d="M-42,0 C-46,-50 -26,-84 0,-84 C26,-84 46,-50 42,0 Q0,8 -42,0Z" fill="${c}"/>`
   const blushSvg =
     blush && face !== 'back' && face !== 'skull'
@@ -265,8 +295,10 @@ export const hat = {
   wingHelm: () =>
     `<path d="M-36,-60 C-36,-96 36,-96 36,-60Z" fill="${C.steel}" stroke="${C.steelD}" stroke-width="2.5"/>` +
     `<path d="M-34,-80 q-22,-10 -26,-30 q14,6 28,18Z M34,-80 q22,-10 26,-30 q-14,6 -28,18Z" fill="#fff" stroke="${C.steelD}" stroke-width="2"/>`,
-  halo: () => `<ellipse cx="0" cy="-92" rx="30" ry="8" fill="none" stroke="${C.gold}" stroke-width="5" filter="url(#glow)"/>`,
-  horns: (fill = C.ink) => `<path d="M-26,-74 Q-40,-100 -24,-108 Q-30,-90 -14,-80Z M26,-74 Q40,-100 24,-108 Q30,-90 14,-80Z" fill="${fill}"/>`,
+  halo: () =>
+    `<ellipse cx="0" cy="-92" rx="30" ry="8" fill="none" stroke="${C.gold}" stroke-width="5" filter="url(#glow)"/>`,
+  horns: (fill = C.ink) =>
+    `<path d="M-26,-74 Q-40,-100 -24,-108 Q-30,-90 -14,-80Z M26,-74 Q40,-100 24,-108 Q30,-90 14,-80Z" fill="${fill}"/>`,
   wreath: () => {
     let s = ''
     for (let i = 0; i < 9; i++) {
@@ -279,7 +311,10 @@ export const hat = {
   },
   flowers: () =>
     [-24, -12, 0, 12, 24]
-      .map((x, i) => `<circle cx="${x}" cy="${-80 - (i % 2 ? 6 : 2)}" r="6" fill="${i % 2 ? C.pink : '#fff'}" stroke="${C.rose}" stroke-width="1.5"/>`)
+      .map(
+        (x, i) =>
+          `<circle cx="${x}" cy="${-80 - (i % 2 ? 6 : 2)}" r="6" fill="${i % 2 ? C.pink : '#fff'}" stroke="${C.rose}" stroke-width="1.5"/>`,
+      )
       .join(''),
   beard: () =>
     `<path d="M-26,-38 Q-30,-6 0,4 Q30,-6 26,-38 Q14,-30 0,-32 Q-14,-30 -26,-38Z" fill="#fff" stroke="${C.grey}" stroke-width="2"/>` +
@@ -287,12 +322,13 @@ export const hat = {
   bandage: () =>
     `<path d="M-38,-66 Q0,-82 38,-66 L36,-58 Q0,-72 -36,-58Z" fill="#fff" stroke="${C.grey}" stroke-width="1.5"/><path d="M-6,-72 l4,6 M2,-73 l4,6" stroke="${C.grey}" stroke-width="1.5"/>`,
   cape: (fill = C.red) => `<path d="M-40,-64 Q-60,-20 -48,2 L48,2 Q60,-20 40,-64 Q0,-50 -40,-64Z" fill="${fill}"/>`,
-  robe: (fill = C.sky) => `<path d="M-44,-2 Q-43,-20 -38,-30 Q0,-20 38,-30 Q43,-20 44,-2 Q0,8 -44,-2Z" fill="${fill}" opacity=".95"/>`,
-  veil: (fill = C.lilac) => `<path d="M-30,-82 Q-56,-40 -50,2 L-38,2 Q-42,-40 -22,-78Z M30,-82 Q56,-40 50,2 L38,2 Q42,-40 22,-78Z" fill="${fill}"/>`,
+  robe: (fill = C.sky) =>
+    `<path d="M-44,-2 Q-43,-20 -38,-30 Q0,-20 38,-30 Q43,-20 44,-2 Q0,8 -44,-2Z" fill="${fill}" opacity=".95"/>`,
+  veil: (fill = C.lilac) =>
+    `<path d="M-30,-82 Q-56,-40 -50,2 L-38,2 Q-42,-40 -22,-78Z M30,-82 Q56,-40 50,2 L38,2 Q42,-40 22,-78Z" fill="${fill}"/>`,
   infinity: () =>
     `<path d="M0,-104 C-6,-112 -20,-112 -20,-104 C-20,-96 -6,-96 0,-104 C6,-112 20,-112 20,-104 C20,-96 6,-96 0,-104Z" fill="none" stroke="${C.goldD}" stroke-width="4"/>`,
-  ears: (fill = '#ffffff') =>
-    `<path d="M-30,-68 L-38,-100 L-12,-80Z M30,-68 L38,-100 L12,-80Z" fill="${fill}"/>`,
+  ears: (fill = '#ffffff') => `<path d="M-30,-68 L-38,-100 L-12,-80Z M30,-68 L38,-100 L12,-80Z" fill="${fill}"/>`,
 }
 
 // ---------- 수트 상징 ----------
@@ -320,7 +356,9 @@ export function cup(x, y, s = 1, { heart = true, rot = 0, fill = C.gold, water =
       `<path d="M-22,-58 L22,-58 Q20,-30 0,-25 Q-20,-30 -22,-58Z" fill="${fill}" stroke="${C.goldD}" stroke-width="2.5"/>` +
       `<ellipse cx="0" cy="-58" rx="22" ry="5" fill="#fff3c9" stroke="${C.goldD}" stroke-width="2.5"/>` +
       (water && !lid ? `<ellipse cx="0" cy="-58" rx="17" ry="3" fill="#9fd8ff"/>` : '') +
-      (lid ? `<path d="M-20,-60 Q0,-86 20,-60Z" fill="${fill}" stroke="${C.goldD}" stroke-width="2.5"/><path d="M0,-80 v-10 M-5,-85 h10" stroke="${C.goldD}" stroke-width="3" stroke-linecap="round"/>` : '') +
+      (lid
+        ? `<path d="M-20,-60 Q0,-86 20,-60Z" fill="${fill}" stroke="${C.goldD}" stroke-width="2.5"/><path d="M0,-80 v-10 M-5,-85 h10" stroke="${C.goldD}" stroke-width="3" stroke-linecap="round"/>`
+        : '') +
       (heart ? `<path d="M0,-32 C-9,-38 -7,-48 0,-43 C7,-48 9,-38 0,-32Z" fill="${C.rose}"/>` : ''),
     { s, rot },
   )
@@ -349,7 +387,12 @@ export function pentacle(x, y, r = 30) {
   )
 }
 export const heart = (x, y, s = 1, fill = C.rose) =>
-  g(x, y, `<path d="M0,22 C-30,2 -26,-24 0,-10 C26,-24 30,2 0,22Z" fill="${fill}" stroke="#ff8fbf" stroke-width="2"/>`, { s })
+  g(
+    x,
+    y,
+    `<path d="M0,22 C-30,2 -26,-24 0,-10 C26,-24 30,2 0,22Z" fill="${fill}" stroke="#ff8fbf" stroke-width="2"/>`,
+    { s },
+  )
 
 // 구름에서 나온 손 (에이스). 주먹이 (x,y)를 쥔다. side: 1이면 오른쪽 구름
 export function fistFromCloud(x, y, side = 1, s = 1) {
@@ -368,7 +411,9 @@ export function horse(x, y, { s = 1, color = '#fff', flip = false, rear = false,
   const legs = rear
     ? `<path d="M-30,10 l-6,40 M-14,14 l2,38 M28,6 q16,-6 22,-26 M40,0 q18,4 24,-14" stroke="${color}" stroke-width="11" stroke-linecap="round" fill="none"/>`
     : `<path d="M-30,12 l-4,40 M-14,14 l0,40 M20,14 l2,40 M34,10 l6,40" stroke="${color}" stroke-width="11" stroke-linecap="round"/>`
-  const hooves = rear ? '' : `<path d="M-38,52 h10 M-19,54 h10 M17,54 h10 M35,50 h10" stroke="${d}" stroke-width="5" stroke-linecap="round"/>`
+  const hooves = rear
+    ? ''
+    : `<path d="M-38,52 h10 M-19,54 h10 M17,54 h10 M35,50 h10" stroke="${d}" stroke-width="5" stroke-linecap="round"/>`
   const inner =
     `<path d="M-46,-6 q-22,10 -18,38" stroke="${mane}" stroke-width="10" fill="none" stroke-linecap="round"/>` +
     legs +
@@ -413,7 +458,12 @@ export function lion(x, y, s = 1) {
 
 // ---------- 소품 ----------
 export const tree = (x, y, s = 1, fill = C.mintD) =>
-  g(x, y, `<path d="M0,0 L0,-50" stroke="${C.brownD}" stroke-width="8" stroke-linecap="round"/><circle cx="0" cy="-66" r="26" fill="${fill}"/><circle cx="-18" cy="-52" r="16" fill="${fill}"/><circle cx="18" cy="-52" r="16" fill="${fill}"/>`, { s })
+  g(
+    x,
+    y,
+    `<path d="M0,0 L0,-50" stroke="${C.brownD}" stroke-width="8" stroke-linecap="round"/><circle cx="0" cy="-66" r="26" fill="${fill}"/><circle cx="-18" cy="-52" r="16" fill="${fill}"/><circle cx="18" cy="-52" r="16" fill="${fill}"/>`,
+    { s },
+  )
 export const castle = (x, y, s = 1, fill = C.lilac) =>
   g(
     x,
@@ -423,28 +473,50 @@ export const castle = (x, y, s = 1, fill = C.lilac) =>
     { s },
   )
 export const flower = (x, y, s = 1, fill = C.pink) =>
-  g(x, y, `<path d="M0,0 L0,-22" stroke="${C.leaf}" stroke-width="3"/><g fill="${fill}"><circle cx="0" cy="-30" r="6"/><circle cx="-6" cy="-24" r="6"/><circle cx="6" cy="-24" r="6"/><circle cx="-4" cy="-18" r="5"/><circle cx="4" cy="-18" r="5"/></g><circle cx="0" cy="-24" r="4" fill="${C.gold}"/>`, { s })
+  g(
+    x,
+    y,
+    `<path d="M0,0 L0,-22" stroke="${C.leaf}" stroke-width="3"/><g fill="${fill}"><circle cx="0" cy="-30" r="6"/><circle cx="-6" cy="-24" r="6"/><circle cx="6" cy="-24" r="6"/><circle cx="-4" cy="-18" r="5"/><circle cx="4" cy="-18" r="5"/></g><circle cx="0" cy="-24" r="4" fill="${C.gold}"/>`,
+    { s },
+  )
 export const sunflower = (x, y, s = 1) => {
   let p = ''
   for (let i = 0; i < 10; i++) {
     const a = (i / 10) * 360
     p += `<ellipse cx="0" cy="-12" rx="4.5" ry="9" fill="${C.gold}" stroke="${C.goldD}" stroke-width="1" transform="rotate(${a})"/>`
   }
-  return g(x, y, `<path d="M0,0 L0,40" stroke="${C.leaf}" stroke-width="4"/><path d="M0,24 q12,-6 16,-16 q-12,0 -16,16Z" fill="${C.leaf}"/>${p}<circle r="8" fill="${C.brown}"/>`, { s })
+  return g(
+    x,
+    y,
+    `<path d="M0,0 L0,40" stroke="${C.leaf}" stroke-width="4"/><path d="M0,24 q12,-6 16,-16 q-12,0 -16,16Z" fill="${C.leaf}"/>${p}<circle r="8" fill="${C.brown}"/>`,
+    { s },
+  )
 }
 export const rose = (x, y, s = 1, fill = '#fff') =>
-  g(x, y, `<circle r="11" fill="${fill}" stroke="${C.lilac}" stroke-width="2"/><path d="M-5,0 q5,-6 10,0 q-5,5 -5,0" stroke="${C.lilacD}" stroke-width="2" fill="none"/>`, { s })
+  g(
+    x,
+    y,
+    `<circle r="11" fill="${fill}" stroke="${C.lilac}" stroke-width="2"/><path d="M-5,0 q5,-6 10,0 q-5,5 -5,0" stroke="${C.lilacD}" stroke-width="2" fill="none"/>`,
+    { s },
+  )
 export const wheat = (x, y, s = 1) =>
   g(
     x,
     y,
     `<path d="M0,0 L0,-40" stroke="${C.goldD}" stroke-width="2.5"/>` +
-      [0, 1, 2, 3].map((i) => `<ellipse cx="-4" cy="${-22 - i * 7}" rx="3" ry="5" fill="${C.gold}" stroke="${C.goldD}" transform="rotate(-25 -4 ${-22 - i * 7})"/><ellipse cx="4" cy="${-22 - i * 7}" rx="3" ry="5" fill="${C.gold}" stroke="${C.goldD}" transform="rotate(25 4 ${-22 - i * 7})"/>`).join(''),
+      [0, 1, 2, 3]
+        .map(
+          (i) =>
+            `<ellipse cx="-4" cy="${-22 - i * 7}" rx="3" ry="5" fill="${C.gold}" stroke="${C.goldD}" transform="rotate(-25 -4 ${-22 - i * 7})"/><ellipse cx="4" cy="${-22 - i * 7}" rx="3" ry="5" fill="${C.gold}" stroke="${C.goldD}" transform="rotate(25 4 ${-22 - i * 7})"/>`,
+        )
+        .join(''),
     { s },
   )
 export const pillar = (x, y, h, fill, letter, ink) =>
   `<rect x="${x - 16}" y="${y - h}" width="32" height="${h}" fill="${fill}"/><rect x="${x - 22}" y="${y - h - 12}" width="44" height="14" rx="4" fill="${fill}"/><rect x="${x - 22}" y="${y - 10}" width="44" height="10" rx="3" fill="${fill}"/>` +
-  (letter ? `<text x="${x}" y="${y - h / 2 + 10}" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="700" fill="${ink}">${letter}</text>` : '')
+  (letter
+    ? `<text x="${x}" y="${y - h / 2 + 10}" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="700" fill="${ink}">${letter}</text>`
+    : '')
 export const throne = (x, y, w = 110, h = 150, fill = C.lilacD) =>
   `<path d="M${x - w / 2},${y} L${x - w / 2},${y - h + 20} Q${x},${y - h - 16} ${x + w / 2},${y - h + 20} L${x + w / 2},${y}Z" fill="${fill}"/>`
 export const banner = (x, y, h, fill, emblem = '') =>
@@ -468,17 +540,36 @@ export const lantern = (x, y, s = 1) =>
     { s },
   )
 export const key = (x, y, rot = 0, s = 1) =>
-  g(x, y, `<circle cx="0" cy="-34" r="10" fill="none" stroke="${C.goldD}" stroke-width="5"/><path d="M0,-24 L0,24 M0,14 h10 M0,22 h8" stroke="${C.goldD}" stroke-width="5" stroke-linecap="round"/>`, { rot, s })
+  g(
+    x,
+    y,
+    `<circle cx="0" cy="-34" r="10" fill="none" stroke="${C.goldD}" stroke-width="5"/><path d="M0,-24 L0,24 M0,14 h10 M0,22 h8" stroke="${C.goldD}" stroke-width="5" stroke-linecap="round"/>`,
+    { rot, s },
+  )
 export const wing = (x, y, s = 1, flip = false, fill = '#fff') =>
-  g(x, y, `<path d="M0,0 Q-30,-50 -70,-60 Q-60,-40 -64,-30 Q-50,-30 -56,-14 Q-36,-16 -40,0 Q-20,-4 0,0Z" fill="${fill}" stroke="${C.lilac}" stroke-width="2" stroke-linejoin="round"/>`, { s, flip })
+  g(
+    x,
+    y,
+    `<path d="M0,0 Q-30,-50 -70,-60 Q-60,-40 -64,-30 Q-50,-30 -56,-14 Q-36,-16 -40,0 Q-20,-4 0,0Z" fill="${fill}" stroke="${C.lilac}" stroke-width="2" stroke-linejoin="round"/>`,
+    { s, flip },
+  )
 export const globe = (x, y, r = 16) =>
   `<circle cx="${x}" cy="${y}" r="${r}" fill="${C.sky}" stroke="${C.skyD}" stroke-width="2.5"/><path d="M${x - r * 0.6},${y - r * 0.3} q${r * 0.4},-${r * 0.4} ${r * 0.7},0 q-${r * 0.1},${r * 0.5} -${r * 0.7},0Z M${x + r * 0.1},${y + r * 0.2} q${r * 0.4},-${r * 0.2} ${r * 0.6},${r * 0.2} q-${r * 0.3},${r * 0.5} -${r * 0.6},-${r * 0.2}Z" fill="${C.mint}"/>`
 export const ship = (x, y, s = 1) =>
-  g(x, y, `<path d="M-20,0 L20,0 L14,10 L-14,10Z" fill="${C.brown}"/><path d="M0,0 L0,-30" stroke="${C.brownD}" stroke-width="2.5"/><path d="M2,-28 L18,-6 L2,-6Z" fill="#fff"/>`, { s })
+  g(
+    x,
+    y,
+    `<path d="M-20,0 L20,0 L14,10 L-14,10Z" fill="${C.brown}"/><path d="M0,0 L0,-30" stroke="${C.brownD}" stroke-width="2.5"/><path d="M2,-28 L18,-6 L2,-6Z" fill="#fff"/>`,
+    { s },
+  )
 export const rainbow = (cx, cy, r, w = 9) =>
   ['#ff9fb3', '#ffd27a', '#bff0d6', '#9fd8ff', '#c9b8ff']
-    .map((c, i) => `<path d="M${cx - r + i * w},${cy} A${r - i * w},${r - i * w} 0 0,1 ${cx + r - i * w},${cy}" stroke="${c}" stroke-width="${w}" fill="none"/>`)
+    .map(
+      (c, i) =>
+        `<path d="M${cx - r + i * w},${cy} A${r - i * w},${r - i * w} 0 0,1 ${cx + r - i * w},${cy}" stroke="${c}" stroke-width="${w}" fill="none"/>`,
+    )
     .join('')
-export const chain = (x1, y1, x2, y2) => `<path d="M${x1},${y1} L${x2},${y2}" stroke="${C.greyD}" stroke-width="3" stroke-dasharray="6 3" stroke-linecap="round"/>`
+export const chain = (x1, y1, x2, y2) =>
+  `<path d="M${x1},${y1} L${x2},${y2}" stroke="${C.greyD}" stroke-width="3" stroke-dasharray="6 3" stroke-linecap="round"/>`
 export const motion = (pts, stroke = '#fff') =>
   `<g stroke="${stroke}" stroke-width="2.5" stroke-linecap="round" opacity=".55">${pts.map(([x, y, dx, dy]) => `<path d="M${x},${y} l${dx},${dy}"/>`).join('')}</g>`

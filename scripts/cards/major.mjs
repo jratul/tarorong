@@ -41,7 +41,12 @@ import {
 } from './lib.mjs'
 
 const batWing = (x, y, flip) =>
-  g(x, y, `<path d="M0,0 Q-30,-64 -86,-54 Q-70,-38 -76,-20 Q-58,-28 -58,-8 Q-42,-18 -38,4Z" fill="#3a3070" stroke="#6e60b8" stroke-width="2" stroke-linejoin="round"/>`, { flip })
+  g(
+    x,
+    y,
+    `<path d="M0,0 Q-30,-64 -86,-54 Q-70,-38 -76,-20 Q-58,-28 -58,-8 Q-42,-18 -38,4Z" fill="#3a3070" stroke="#6e60b8" stroke-width="2" stroke-linejoin="round"/>`,
+    { flip },
+  )
 
 const roseBadge = (x, y, r = 12) =>
   [0, 1, 2, 3, 4]
@@ -55,9 +60,26 @@ export const majors = {
   'major-01-magician': () =>
     svg(
       bg('gold') +
-        dots([[30, 60], [220, 50], [40, 160], [226, 150]], C.goldD, 2, 0.4) +
+        dots(
+          [
+            [30, 60],
+            [220, 50],
+            [40, 160],
+            [226, 150],
+          ],
+          C.goldD,
+          2,
+          0.4,
+        ) +
         wand(178, 214, 120, 8) +
-        jelly(128, 286, { s: 1.15, color: 'white', face: 'determined', arms: 'rup', under: hat.cape(C.red), acc: hat.infinity() }) +
+        jelly(128, 286, {
+          s: 1.15,
+          color: 'white',
+          face: 'determined',
+          arms: 'rup',
+          under: hat.cape(C.red),
+          acc: hat.infinity(),
+        }) +
         `<rect x="18" y="276" width="220" height="22" rx="6" fill="${C.brown}"/><rect x="18" y="272" width="220" height="10" rx="5" fill="#c99a6e"/><path d="M36,298 v74 M220,298 v74" stroke="${C.brownD}" stroke-width="8"/>` +
         cup(56, 274, 0.6, { heart: false }) +
         pentacle(102, 256, 15) +
@@ -70,7 +92,15 @@ export const majors = {
     svg(
       bg('night') +
         `<rect x="56" y="90" width="144" height="240" rx="6" fill="#5a4a9a"/>` +
-        [[80, 130], [128, 116], [176, 130], [92, 190], [164, 190]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="9" fill="${C.red}" opacity=".85"/>`).join('') +
+        [
+          [80, 130],
+          [128, 116],
+          [176, 130],
+          [92, 190],
+          [164, 190],
+        ]
+          .map(([x, y]) => `<circle cx="${x}" cy="${y}" r="9" fill="${C.red}" opacity=".85"/>`)
+          .join('') +
         pillar(36, 336, 260, '#3a3070', 'B', '#fff') +
         pillar(220, 336, 260, '#fff', 'J', C.ink) +
         ground(336, '#3a3070', 0) +
@@ -112,7 +142,14 @@ export const majors = {
               `<circle cx="${x}" cy="128" r="15" fill="#d6d1ea" stroke="#8f89ad" stroke-width="2"/><path d="M${x - 6},120 q-16,-6 -14,10 q2,8 9,4" stroke="${C.goldD}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M${x + 6},120 q16,-6 14,10 q-2,8 -9,4" stroke="${C.goldD}" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="${x - 5}" cy="128" r="2" fill="${C.ink}"/><circle cx="${x + 5}" cy="128" r="2" fill="${C.ink}"/>`,
           )
           .join('') +
-        jelly(128, 326, { s: 1.25, color: 'peach', face: 'determined', arms: 'out', under: hat.cape(C.red), acc: hat.beard() + hat.crown() }) +
+        jelly(128, 326, {
+          s: 1.25,
+          color: 'peach',
+          face: 'determined',
+          arms: 'out',
+          under: hat.cape(C.red),
+          acc: hat.beard() + hat.crown(),
+        }) +
         `<circle cx="196" cy="234" r="10" fill="none" stroke="${C.goldD}" stroke-width="5"/><path d="M196,244 V290 M184,252 H208" stroke="${C.goldD}" stroke-width="5" stroke-linecap="round"/>` +
         `<circle cx="60" cy="262" r="12" fill="${C.gold}" stroke="${C.goldD}" stroke-width="2.5"/><path d="M60,250 v-8 M55,246 h10" stroke="${C.goldD}" stroke-width="2.5"/>`,
     ),
@@ -138,7 +175,13 @@ export const majors = {
         wing(108, 146, 0.95) +
         wing(148, 146, 0.95, true) +
         cloud(128, 186, 1.4) +
-        jelly(128, 178, { s: 0.75, color: 'lilac', face: 'calm', arms: 'out', acc: `<path d="M-22,-80 q0,-20 10,-22 q2,10 8,6 q4,-12 14,-6 q8,-6 12,6Z" fill="${C.orange}"/>` }) +
+        jelly(128, 178, {
+          s: 0.75,
+          color: 'lilac',
+          face: 'calm',
+          arms: 'out',
+          acc: `<path d="M-22,-80 q0,-20 10,-22 q2,10 8,6 q4,-12 14,-6 q8,-6 12,6Z" fill="${C.orange}"/>`,
+        }) +
         jelly(62, 344, { s: 0.95, color: 'pink', face: 'happy', arms: 'rout' }) +
         jelly(194, 344, { s: 0.95, color: 'sky', face: 'happy', arms: 'lout' }) +
         heart(128, 288, 0.9),
@@ -193,7 +236,14 @@ export const majors = {
   'major-09-hermit': () =>
     svg(
       bg('night') +
-        dots([[30, 50], [90, 80], [200, 40], [236, 110], [150, 60], [40, 150]]) +
+        dots([
+          [30, 50],
+          [90, 80],
+          [200, 40],
+          [236, 110],
+          [150, 60],
+          [40, 150],
+        ]) +
         `<path d="M0,372 L0,320 Q128,262 256,320 L256,372Z" fill="${C.lilac}"/>` +
         `<path d="M184,336 L176,150" stroke="${C.brown}" stroke-width="7" stroke-linecap="round"/>` +
         jelly(128, 330, {
@@ -233,7 +283,12 @@ export const majors = {
         star(128, 200, 1.6, '#fff') +
         letters +
         `<path d="M40,150 q-14,30 4,56 q18,26 0,60" stroke="${C.goldD}" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="40" cy="146" r="7" fill="${C.goldD}"/>` +
-        jelly(128, 112, { s: 0.5, color: 'sky', face: 'smug', acc: `<path d="M-30,-70 L-46,-20 L-30,-30 Z M30,-70 L46,-20 L30,-30Z" fill="${C.sky}" stroke="#94d0f2" stroke-width="2"/>` }) +
+        jelly(128, 112, {
+          s: 0.5,
+          color: 'sky',
+          face: 'smug',
+          acc: `<path d="M-30,-70 L-46,-20 L-30,-30 Z M30,-70 L46,-20 L30,-30Z" fill="${C.sky}" stroke="#94d0f2" stroke-width="2"/>`,
+        }) +
         sword(158, 96, 50, 20, 0.7),
     )
   },
@@ -246,7 +301,14 @@ export const majors = {
         pillar(222, 336, 270, '#b3acd0') +
         ground(336, '#b3acd0', 0) +
         sword(184, 252, 160, 0, 1) +
-        jelly(128, 330, { s: 1.15, color: 'peach', face: 'determined', arms: 'rup', under: hat.cape(C.red), acc: hat.crown() }) +
+        jelly(128, 330, {
+          s: 1.15,
+          color: 'peach',
+          face: 'determined',
+          arms: 'rup',
+          under: hat.cape(C.red),
+          acc: hat.crown(),
+        }) +
         scales(70, 290, 1.05),
     ),
 
@@ -260,10 +322,19 @@ export const majors = {
           [54, 160],
           [202, 200],
         ]
-          .map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="12" ry="6" fill="${C.leaf}" transform="rotate(-30 ${x} ${y})"/>`)
+          .map(
+            ([x, y]) =>
+              `<ellipse cx="${x}" cy="${y}" rx="12" ry="6" fill="${C.leaf}" transform="rotate(-30 ${x} ${y})"/>`,
+          )
           .join('') +
         `<path d="M128,78 V110" stroke="${C.brownD}" stroke-width="4"/>` +
-        jelly(128, 112, { s: 1.35, rot: 180, color: 'sky', face: 'calm', acc: hat.halo() + `<path d="M-42,-20 Q0,-6 42,-20" stroke="${C.red}" stroke-width="10" fill="none"/>` }) +
+        jelly(128, 112, {
+          s: 1.35,
+          rot: 180,
+          color: 'sky',
+          face: 'calm',
+          acc: hat.halo() + `<path d="M-42,-20 Q0,-6 42,-20" stroke="${C.red}" stroke-width="10" fill="none"/>`,
+        }) +
         ground(350, C.mint, 0),
     ),
 
@@ -321,8 +392,19 @@ export const majors = {
         ground(336, '#2c2652', 0) +
         chain(128, 276, 66, 286) +
         chain(128, 276, 190, 286) +
-        jelly(60, 350, { s: 0.68, color: 'pink', face: 'sad', acc: hat.horns(C.lilacD) + `<path d="M40,-10 q20,0 16,-20" stroke="${C.pink}" stroke-width="5" fill="none"/>` }) +
-        jelly(196, 350, { s: 0.68, color: 'sky', face: 'sad', acc: hat.horns(C.lilacD) + `<path d="M-40,-10 q-20,0 -16,-20" stroke="${C.sky}" stroke-width="5" fill="none"/>` }),
+        jelly(60, 350, {
+          s: 0.68,
+          color: 'pink',
+          face: 'sad',
+          acc: hat.horns(C.lilacD) + `<path d="M40,-10 q20,0 16,-20" stroke="${C.pink}" stroke-width="5" fill="none"/>`,
+        }) +
+        jelly(196, 350, {
+          s: 0.68,
+          color: 'sky',
+          face: 'sad',
+          acc:
+            hat.horns(C.lilacD) + `<path d="M-40,-10 q-20,0 -16,-20" stroke="${C.sky}" stroke-width="5" fill="none"/>`,
+        }),
     ),
 
   'major-18-moon': () =>
@@ -331,7 +413,19 @@ export const majors = {
         `<circle cx="128" cy="112" r="78" fill="#e6dcff" opacity=".12"/><circle cx="128" cy="112" r="64" fill="#e6dcff" opacity=".14"/>` +
         `<circle cx="128" cy="112" r="54" fill="#f3efff"/>` +
         `<path d="M128,58 A54,54 0 0,1 128,166 A30,54 0 0,0 128,58Z" fill="${C.lilacD}" opacity=".55"/>` +
-        dots([[40, 60], [214, 50], [30, 150], [230, 170], [70, 200], [190, 210]], '#fff', 1.5, 0.6) +
+        dots(
+          [
+            [40, 60],
+            [214, 50],
+            [30, 150],
+            [230, 170],
+            [70, 200],
+            [190, 210],
+          ],
+          '#fff',
+          1.5,
+          0.6,
+        ) +
         `<path d="M100,108 q8,6 16,0 M136,108 q8,6 16,0" stroke="${C.ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="102" cy="124" rx="7" ry="4" fill="${C.rose}" opacity=".7"/><ellipse cx="154" cy="124" rx="7" ry="4" fill="${C.rose}" opacity=".7"/>` +
         `<rect x="14" y="214" width="34" height="90" fill="${C.lilacD}"/><path d="M10,216 L31,196 L52,216Z" fill="#8d7fd1"/>` +
         `<rect x="208" y="214" width="34" height="90" fill="${C.lilacD}"/><path d="M204,216 L225,196 L246,216Z" fill="#8d7fd1"/>` +
@@ -365,7 +459,13 @@ export const majors = {
         sea(300, C.skyD) +
         wing(116, 86, 1) +
         wing(140, 86, 1, true) +
-        jelly(128, 150, { s: 0.8, color: 'white', face: 'calm', arms: 'rout', acc: `<path d="M-24,-80 q0,-20 10,-22 q2,10 8,6 q4,-12 14,-6 q8,-6 12,6Z" fill="${C.gold}"/>` }) +
+        jelly(128, 150, {
+          s: 0.8,
+          color: 'white',
+          face: 'calm',
+          arms: 'rout',
+          acc: `<path d="M-24,-80 q0,-20 10,-22 q2,10 8,6 q4,-12 14,-6 q8,-6 12,6Z" fill="${C.gold}"/>`,
+        }) +
         cloud(70, 160, 1.4) +
         cloud(186, 160, 1.4) +
         cloud(128, 172, 1.5) +
@@ -392,7 +492,8 @@ export const majors = {
       const y = 192 + Math.sin(a) * 114
       wreath += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="11" ry="5.5" fill="${i % 2 ? C.leaf : C.mintD}" transform="rotate(${((a * 180) / Math.PI + 60).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`
     }
-    const bow = (y) => `<path d="M128,${y} l-16,-10 v20Z M128,${y} l16,-10 v20Z" fill="${C.red}"/><circle cx="128" cy="${y}" r="4" fill="${C.red}"/>`
+    const bow = (y) =>
+      `<path d="M128,${y} l-16,-10 v20Z M128,${y} l16,-10 v20Z" fill="${C.red}"/><circle cx="128" cy="${y}" r="4" fill="${C.red}"/>`
     return svg(
       bg('soft') +
         cloud(34, 52, 0.7) +

@@ -84,14 +84,30 @@ const fish = (x, y, s = 1, rot = 0) =>
     { s, rot },
   )
 const house = (x, y, s = 1) =>
-  g(x, y, `<rect x="-20" y="-28" width="40" height="28" fill="${C.cream}" stroke="${C.creamD}" stroke-width="2"/><path d="M-26,-26 L0,-46 L26,-26Z" fill="${C.red}"/><rect x="-5" y="-14" width="10" height="14" fill="${C.brown}"/>`, { s })
+  g(
+    x,
+    y,
+    `<rect x="-20" y="-28" width="40" height="28" fill="${C.cream}" stroke="${C.creamD}" stroke-width="2"/><path d="M-26,-26 L0,-46 L26,-26Z" fill="${C.red}"/><rect x="-5" y="-14" width="10" height="14" fill="${C.brown}"/>`,
+    { s },
+  )
 const birds = (pts) =>
   `<g stroke="${C.navy}" stroke-width="2.5" fill="none" stroke-linecap="round">${pts.map(([x, y]) => `<path d="M${x - 8},${y} q4,-5 8,0 q4,-5 8,0"/>`).join('')}</g>`
-const tents = (x, y) => `<path d="M${x - 26},${y} L${x},${y - 34} L${x + 26},${y}Z" fill="${C.red}"/><path d="M${x},${y - 34} L${x},${y}" stroke="#fff" stroke-width="3"/>`
+const tents = (x, y) =>
+  `<path d="M${x - 26},${y} L${x},${y - 34} L${x + 26},${y}Z" fill="${C.red}"/><path d="M${x},${y - 34} L${x},${y}" stroke="#fff" stroke-width="3"/>`
 const butterfly = (x, y, s = 1) =>
-  g(x, y, `<path d="M0,0 q-14,-14 -16,0 q2,12 16,0Z M0,0 q14,-14 16,0 q-2,12 -16,0Z" fill="${C.pink}" stroke="${C.rose}" stroke-width="1.5"/><path d="M0,-6 v12" stroke="${C.navy}" stroke-width="2"/>`, { s })
+  g(
+    x,
+    y,
+    `<path d="M0,0 q-14,-14 -16,0 q2,12 16,0Z M0,0 q14,-14 16,0 q-2,12 -16,0Z" fill="${C.pink}" stroke="${C.rose}" stroke-width="1.5"/><path d="M0,-6 v12" stroke="${C.navy}" stroke-width="2"/>`,
+    { s },
+  )
 const bull = (x, y, s = 1) =>
-  g(x, y, `<circle r="13" fill="${C.brown}"/><path d="M-10,-8 q-14,-4 -12,-16 M10,-8 q14,-4 12,-16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="-5" cy="-2" r="1.8" fill="${C.ink}"/><circle cx="5" cy="-2" r="1.8" fill="${C.ink}"/><ellipse cx="0" cy="6" rx="6" ry="4" fill="${C.rose}"/>`, { s })
+  g(
+    x,
+    y,
+    `<circle r="13" fill="${C.brown}"/><path d="M-10,-8 q-14,-4 -12,-16 M10,-8 q14,-4 12,-16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="-5" cy="-2" r="1.8" fill="${C.ink}"/><circle cx="5" cy="-2" r="1.8" fill="${C.ink}"/><ellipse cx="0" cy="6" rx="6" ry="4" fill="${C.rose}"/>`,
+    { s },
+  )
 const palmHand = (x, y) =>
   g(
     x - 126,
@@ -116,7 +132,14 @@ const coinsArc = (n, y0, amp, r, x0 = 30, x1 = 226) =>
 // ---------- 완드 ----------
 const wands = {
   'wands-01-ace': () =>
-    svg(bg('day') + hills(300, C.mint) + castle(206, 286, 0.8) + wand(104, 330, 270, 0, 1.05) + fistFromCloud(104, 264, 1, 1) + `<ellipse cx="60" cy="200" rx="8" ry="4" fill="${C.leaf}" transform="rotate(30 60 200)"/><ellipse cx="72" cy="250" rx="8" ry="4" fill="${C.leaf}" transform="rotate(-20 72 250)"/>`),
+    svg(
+      bg('day') +
+        hills(300, C.mint) +
+        castle(206, 286, 0.8) +
+        wand(104, 330, 270, 0, 1.05) +
+        fistFromCloud(104, 264, 1, 1) +
+        `<ellipse cx="60" cy="200" rx="8" ry="4" fill="${C.leaf}" transform="rotate(30 60 200)"/><ellipse cx="72" cy="250" rx="8" ry="4" fill="${C.leaf}" transform="rotate(-20 72 250)"/>`,
+    ),
   'wands-02-two': () =>
     svg(
       bg('gold') +
@@ -124,7 +147,13 @@ const wands = {
         hills(270, C.mint) +
         wand(40, 372, 300) +
         wand(200, 372, 300) +
-        jelly(128, 330, { s: 1.15, color: 'peach', face: 'determined', arms: 'rout', acc: `<path d="M-30,-78 Q0,-104 30,-78Z" fill="${C.red}"/>` }) +
+        jelly(128, 330, {
+          s: 1.15,
+          color: 'peach',
+          face: 'determined',
+          arms: 'rout',
+          acc: `<path d="M-30,-78 Q0,-104 30,-78Z" fill="${C.red}"/>`,
+        }) +
         globe(76, 268, 22) +
         `<rect x="0" y="322" width="256" height="50" fill="#d6d1ea"/><path d="M0,334 H256 M40,322 v12 M110,322 v12 M180,322 v12" stroke="#b3acd0" stroke-width="2"/>`,
     ),
@@ -150,7 +179,12 @@ const wands = {
         jelly(154, 300, { s: 0.6, color: 'sky', face: 'happy', arms: 'up' }) +
         [36, 92, 164, 220].map((x) => wand(x, 372, 250)).join('') +
         `<path d="M36,132 Q64,170 92,132 M92,132 Q128,176 164,132 M164,132 Q192,170 220,132" stroke="${C.leaf}" stroke-width="9" fill="none"/>` +
-        [64, 110, 146, 192].map((x, i) => `<circle cx="${x}" cy="${i % 3 ? 160 : 156}" r="7" fill="${i % 2 ? C.pink : C.gold}" stroke="${C.rose}" stroke-width="1.5"/>`).join(''),
+        [64, 110, 146, 192]
+          .map(
+            (x, i) =>
+              `<circle cx="${x}" cy="${i % 3 ? 160 : 156}" r="7" fill="${i % 2 ? C.pink : C.gold}" stroke="${C.rose}" stroke-width="1.5"/>`,
+          )
+          .join(''),
     ),
   'wands-05-five': () =>
     svg(
@@ -164,11 +198,14 @@ const wands = {
         jelly(52, 360, { s: 0.65, color: 'pink', face: 'determined', arms: 'up' }) +
         jelly(128, 368, { s: 0.65, color: 'sky', face: 'determined', arms: 'up' }) +
         jelly(204, 360, { s: 0.65, color: 'mint', face: 'determined', arms: 'up' }) +
-        motion([
-          [80, 100, -10, -8],
-          [176, 100, 10, -8],
-          [128, 70, 0, -12],
-        ], C.goldD),
+        motion(
+          [
+            [80, 100, -10, -8],
+            [176, 100, 10, -8],
+            [128, 70, 0, -12],
+          ],
+          C.goldD,
+        ),
     ),
   'wands-06-six': () =>
     svg(
@@ -214,7 +251,13 @@ const wands = {
         jelly(110, 346, { s: 1.05, color: 'peach', face: 'sad', arms: 'front', rot: 10 }),
     ),
   'wands-11-page': () =>
-    svg(bg('gold') + pyramids(270) + ground(270, '#ffe2a8', 0) + wand(176, 360, 270) + jelly(104, 340, { s: 1.15, color: 'peach', face: 'surprised', arms: 'rout', acc: hat.feather(C.orange) })),
+    svg(
+      bg('gold') +
+        pyramids(270) +
+        ground(270, '#ffe2a8', 0) +
+        wand(176, 360, 270) +
+        jelly(104, 340, { s: 1.15, color: 'peach', face: 'surprised', arms: 'rout', acc: hat.feather(C.orange) }),
+    ),
   'wands-12-knight': () =>
     svg(
       bg('gold') +
@@ -242,7 +285,14 @@ const wands = {
         lizard(186, 140, 0.8) +
         ground(330, '#e3a08c', 0) +
         wand(204, 332, 260) +
-        jelly(124, 326, { s: 1.2, color: 'peach', face: 'determined', arms: 'out', under: hat.cape(C.red), acc: hat.crown() }) +
+        jelly(124, 326, {
+          s: 1.2,
+          color: 'peach',
+          face: 'determined',
+          arms: 'out',
+          under: hat.cape(C.red),
+          acc: hat.crown(),
+        }) +
         lizard(70, 356, 1),
     ),
 }
@@ -271,7 +321,11 @@ const cups = {
           [128, 'lilac'],
           [196, 'mint'],
         ]
-          .map(([x, c], i) => jelly(x, 336 - (i === 1 ? 10 : 0), { s: 0.82, color: c, face: 'happy', arms: 'up', acc: hat.flowers() }) + cup(x, 336 - (i === 1 ? 10 : 0) - 84, 0.72))
+          .map(
+            ([x, c], i) =>
+              jelly(x, 336 - (i === 1 ? 10 : 0), { s: 0.82, color: c, face: 'happy', arms: 'up', acc: hat.flowers() }) +
+              cup(x, 336 - (i === 1 ? 10 : 0) - 84, 0.72),
+          )
           .join('') +
         `<circle cx="40" cy="356" r="12" fill="${C.orange}"/><circle cx="214" cy="358" r="10" fill="#8d7fd1"/><circle cx="226" cy="352" r="8" fill="#8d7fd1"/>`,
     ),
@@ -303,7 +357,14 @@ const cups = {
         cup(124, 346, 0.62, { rot: -110, water: false, heart: false }),
     ),
   'cups-06-six': () => {
-    const flowerCup = (x, y, s) => cup(x, y, s, { heart: false, water: false }) + [-8, 0, 8].map((dx) => `<circle cx="${x + dx * s * 1.4}" cy="${y - 62 * s}" r="${6 * s * 1.3}" fill="#fff" stroke="${C.lilac}" stroke-width="1.5"/>`).join('')
+    const flowerCup = (x, y, s) =>
+      cup(x, y, s, { heart: false, water: false }) +
+      [-8, 0, 8]
+        .map(
+          (dx) =>
+            `<circle cx="${x + dx * s * 1.4}" cy="${y - 62 * s}" r="${6 * s * 1.3}" fill="#fff" stroke="${C.lilac}" stroke-width="1.5"/>`,
+        )
+        .join('')
     return svg(
       bg('gold') +
         house(200, 250, 1) +
@@ -320,8 +381,16 @@ const cups = {
       g(0, -40, `<path d="M-10,0 V-14 H10 V0Z M-12,-14 L0,-24 L12,-14Z" fill="${C.lilacD}"/>`),
       g(0, -44, `<path d="M0,-12 L10,0 L0,12 L-10,0Z" fill="${C.sky}" stroke="${C.skyD}" stroke-width="2"/>`),
       g(0, -44, `<circle r="10" fill="none" stroke="${C.leaf}" stroke-width="5"/>`),
-      g(0, -44, `<path d="M-12,6 q6,-14 12,0 q6,14 12,0" stroke="${C.mintD}" stroke-width="5" fill="none" stroke-linecap="round"/>`),
-      g(0, -44, `<circle r="10" fill="${C.pink}"/><circle cx="-3" cy="-2" r="1.6" fill="${C.ink}"/><circle cx="3" cy="-2" r="1.6" fill="${C.ink}"/>`),
+      g(
+        0,
+        -44,
+        `<path d="M-12,6 q6,-14 12,0 q6,14 12,0" stroke="${C.mintD}" stroke-width="5" fill="none" stroke-linecap="round"/>`,
+      ),
+      g(
+        0,
+        -44,
+        `<circle r="10" fill="${C.pink}"/><circle cx="-3" cy="-2" r="1.6" fill="${C.ink}"/><circle cx="3" cy="-2" r="1.6" fill="${C.ink}"/>`,
+      ),
       g(0, -44, `<use href="#s8" transform="scale(1.1)" fill="${C.gold}"/>`),
     ]
     const pos = [
@@ -335,7 +404,9 @@ const cups = {
     ]
     return svg(
       bg('lilac') +
-        pos.map(([x, y], i) => cloud(x, y + 6, 0.62) + cup(x, y, 0.58, { heart: false }) + g(x, y - 34, items[i])).join('') +
+        pos
+          .map(([x, y], i) => cloud(x, y + 6, 0.62) + cup(x, y, 0.58, { heart: false }) + g(x, y - 34, items[i]))
+          .join('') +
         jelly(128, 400, { s: 1.4, color: 'dark', face: 'back' }),
     )
   },
@@ -359,7 +430,13 @@ const cups = {
           return cup(24 + p * 208, 214 - 52 * Math.sin(Math.PI * p) + 4, 0.55)
         }).join('') +
         `<rect x="40" y="300" width="176" height="18" rx="6" fill="${C.brown}"/>` +
-        jelly(128, 340, { s: 1.3, color: 'peach', face: 'smug', arms: 'cross', acc: `<path d="M-30,-78 Q0,-104 30,-78Z" fill="${C.red}"/>` }),
+        jelly(128, 340, {
+          s: 1.3,
+          color: 'peach',
+          face: 'smug',
+          arms: 'cross',
+          acc: `<path d="M-30,-78 Q0,-104 30,-78Z" fill="${C.red}"/>`,
+        }),
     ),
   'cups-10-ten': () =>
     svg(
@@ -399,7 +476,14 @@ const cups = {
         sea(250, C.skyD) +
         `<rect x="22" y="130" width="130" height="200" rx="20" fill="${C.lilac}"/>` +
         ground(330, '#d9cffb', 0) +
-        jelly(96, 330, { s: 1.15, color: 'sky', face: 'calm', arms: 'rout', under: hat.veil(C.lilac), acc: hat.tiara() }) +
+        jelly(96, 330, {
+          s: 1.15,
+          color: 'sky',
+          face: 'calm',
+          arms: 'rout',
+          under: hat.veil(C.lilac),
+          acc: hat.tiara(),
+        }) +
         cup(186, 322, 1.15, { lid: true, heart: true }),
     ),
   'cups-14-king': () =>
@@ -410,7 +494,14 @@ const cups = {
         fish(44, 230, 1, -30) +
         `<rect x="56" y="300" width="144" height="50" rx="6" fill="#b3acd0"/>` +
         `<rect x="66" y="150" width="124" height="160" rx="16" fill="#d6d1ea"/>` +
-        jelly(128, 306, { s: 1.1, color: 'sky', face: 'calm', arms: 'out', under: hat.cape(C.skyD), acc: hat.crown() }) +
+        jelly(128, 306, {
+          s: 1.1,
+          color: 'sky',
+          face: 'calm',
+          arms: 'out',
+          under: hat.cape(C.skyD),
+          acc: hat.crown(),
+        }) +
         cup(178, 286, 0.8) +
         `<path d="M0,350 Q32,340 64,350 T128,350 T192,350 T256,350 L256,372 L0,372Z" fill="${C.skyD}"/>`,
     ),
@@ -424,7 +515,11 @@ const swords = {
         mountains(320, '#d6d1ea') +
         sword(104, 300, 240, 0, 1.05) +
         fistFromCloud(104, 310, 1, 1) +
-        g(104, 70, `<path d="M-22,8 L-24,-14 L-12,-4 L0,-20 L12,-4 L24,-14 L22,8Z" fill="${C.gold}" stroke="${C.goldD}" stroke-width="2.5" stroke-linejoin="round"/>`) +
+        g(
+          104,
+          70,
+          `<path d="M-22,8 L-24,-14 L-12,-4 L0,-20 L12,-4 L24,-14 L22,8Z" fill="${C.gold}" stroke="${C.goldD}" stroke-width="2.5" stroke-linejoin="round"/>`,
+        ) +
         `<path d="M84,78 q-20,14 -14,40 M124,78 q20,14 14,40" stroke="${C.leaf}" stroke-width="5" fill="none" stroke-linecap="round"/>`,
     ),
   'swords-02-two': () =>
@@ -443,7 +538,17 @@ const swords = {
       bg('storm') +
         cloud(56, 74, 1.1, '#6e60b8') +
         cloud(200, 66, 1.2, '#6e60b8') +
-        rain([[40, 110], [70, 130], [190, 110], [220, 128], [120, 300], [30, 300], [220, 300], [60, 340], [200, 340]]) +
+        rain([
+          [40, 110],
+          [70, 130],
+          [190, 110],
+          [220, 128],
+          [120, 300],
+          [30, 300],
+          [220, 300],
+          [60, 340],
+          [200, 340],
+        ]) +
         heart(128, 210, 3.1, C.rose) +
         stuckSword(128, 300, 240, 0, 0.9) +
         stuckSword(146, 290, 230, 26, 0.9) +
@@ -498,10 +603,13 @@ const swords = {
         stuckSword(64, 336, 140, 6, 0.75) +
         jelly(150, 346, { s: 1.05, color: 'peach', face: 'smug', rot: 10, flip: true, arms: 'out' }) +
         Array.from({ length: 5 }, (_, i) => sword(110 + i * 8, 300 + i * 2, 150, 64 + i * 4, 0.8)).join('') +
-        motion([
-          [200, 362, 14, 0],
-          [204, 350, 14, 0],
-        ], C.navy),
+        motion(
+          [
+            [200, 362, 14, 0],
+            [204, 350, 14, 0],
+          ],
+          C.navy,
+        ),
     ),
   'swords-08-eight': () =>
     svg(
@@ -511,7 +619,12 @@ const swords = {
         [16, 38, 60, 196, 218, 240].map((x, i) => stuckSword(x, 340 - (i % 2) * 6, 160, 0, 0.75)).join('') +
         stuckSword(82, 330, 120, 0, 0.7) +
         stuckSword(174, 330, 120, 0, 0.7) +
-        jelly(128, 340, { s: 1.1, color: 'white', face: 'blind', acc: `<path d="M-44,-20 Q0,-10 44,-20 M-44,-34 Q0,-24 44,-34" stroke="${C.red}" stroke-width="5" fill="none"/>` }),
+        jelly(128, 340, {
+          s: 1.1,
+          color: 'white',
+          face: 'blind',
+          acc: `<path d="M-44,-20 Q0,-10 44,-20 M-44,-34 Q0,-24 44,-34" stroke="${C.red}" stroke-width="5" fill="none"/>`,
+        }),
     ),
   'swords-09-nine': () =>
     svg(
@@ -527,7 +640,12 @@ const swords = {
           ],
         }) +
         `<rect x="18" y="300" width="220" height="44" rx="8" fill="#fff"/>` +
-        [36, 76, 116, 156, 196].map((x, i) => `<rect x="${x}" y="${i % 2 ? 314 : 306}" width="22" height="22" rx="4" fill="${i % 2 ? C.pink : C.sky}"/>`).join('') +
+        [36, 76, 116, 156, 196]
+          .map(
+            (x, i) =>
+              `<rect x="${x}" y="${i % 2 ? 314 : 306}" width="22" height="22" rx="4" fill="${i % 2 ? C.pink : C.sky}"/>`,
+          )
+          .join('') +
         `<path d="M24,344 v28 M232,344 v28" stroke="${C.brown}" stroke-width="10"/>`,
     ),
   'swords-10-ten': () =>
@@ -536,14 +654,20 @@ const swords = {
         `<rect x="0" y="262" width="256" height="40" fill="${C.gold}" opacity=".55"/>` +
         ground(300, '#2c2652', 0) +
         jelly(36, 300, { s: 1.35, rot: 90, color: 'grey', face: 'dizzy' }) +
-        Array.from({ length: 10 }, (_, i) => stuckSword(52 + i * 10, 254 - Math.sin((i / 9) * Math.PI) * 6, 130, -36 + i * 8, 0.62)).join(''),
+        Array.from({ length: 10 }, (_, i) =>
+          stuckSword(52 + i * 10, 254 - Math.sin((i / 9) * Math.PI) * 6, 130, -36 + i * 8, 0.62),
+        ).join(''),
     ),
   'swords-11-page': () =>
     svg(
       bg('grey') +
         cloud(60, 80, 1, '#fff') +
         cloud(200, 110, 0.8, '#fff') +
-        birds([[150, 60], [176, 74], [126, 84]]) +
+        birds([
+          [150, 60],
+          [176, 74],
+          [126, 84],
+        ]) +
         ground(320, C.mint, 14) +
         sword(176, 280, 220, 12, 1) +
         jelly(104, 336, { s: 1.15, color: 'peach', face: 'determined', arms: 'rup' }),
@@ -552,11 +676,14 @@ const swords = {
     svg(
       bg('grey') +
         cloud(200, 70, 1, '#fff') +
-        motion([
-          [20, 120, 30, 0],
-          [10, 160, 40, 0],
-          [24, 200, 30, 0],
-        ], '#fff') +
+        motion(
+          [
+            [20, 120, 30, 0],
+            [10, 160, 40, 0],
+            [24, 200, 30, 0],
+          ],
+          '#fff',
+        ) +
         ground(320, '#b3acd0', 0) +
         horse(116, 290, { s: 0.92, color: '#fff', rear: true }) +
         jelly(100, 248, { s: 0.6, color: 'sky', face: 'determined', arms: 'rout', acc: hat.helmet(C.red) }) +
@@ -581,7 +708,14 @@ const swords = {
         butterfly(176, 132, 1) +
         ground(330, '#b3acd0', 0) +
         sword(196, 312, 250, -6, 1) +
-        jelly(124, 330, { s: 1.2, color: 'sky', face: 'determined', arms: 'out', under: hat.cape(C.lilacD), acc: hat.crown() }),
+        jelly(124, 330, {
+          s: 1.2,
+          color: 'sky',
+          face: 'determined',
+          arms: 'out',
+          under: hat.cape(C.lilacD),
+          acc: hat.crown(),
+        }),
     ),
 }
 
@@ -612,7 +746,14 @@ const pentacles = {
         `<path d="M128,170 C100,116 46,116 46,170 C46,224 100,224 128,170 C156,116 210,116 210,170 C210,224 156,224 128,170Z" stroke="${C.leaf}" stroke-width="7" fill="none"/>` +
         pentacle(62, 170, 28) +
         pentacle(194, 170, 28) +
-        jelly(128, 352, { s: 1.05, color: 'peach', face: 'happy', arms: 'out', rot: -6, acc: `<path d="M-14,-80 L0,-124 L14,-80Z" fill="${C.red}"/>` }),
+        jelly(128, 352, {
+          s: 1.05,
+          color: 'peach',
+          face: 'happy',
+          arms: 'out',
+          rot: -6,
+          acc: `<path d="M-14,-80 L0,-124 L14,-80Z" fill="${C.red}"/>`,
+        }),
     ),
   'pentacles-03-three': () =>
     svg(
@@ -662,7 +803,13 @@ const pentacles = {
       bg('gold') +
         coinsArc(6, 70, 20, 16, 28, 228) +
         ground(330, '#f5d27a', 0) +
-        jelly(128, 316, { s: 1.05, color: 'peach', face: 'calm', arms: 'lup', acc: hat.robe(C.red) + `<path d="M-30,-78 Q0,-104 30,-78Z" fill="${C.red}"/>` }) +
+        jelly(128, 316, {
+          s: 1.05,
+          color: 'peach',
+          face: 'calm',
+          arms: 'lup',
+          acc: hat.robe(C.red) + `<path d="M-30,-78 Q0,-104 30,-78Z" fill="${C.red}"/>`,
+        }) +
         scales(80, 210, 0.85) +
         [
           [176, 266],
@@ -727,7 +874,10 @@ const pentacles = {
           [52, 170],
           [204, 226],
         ]
-          .map(([x, y]) => `<g fill="#8d7fd1"><circle cx="${x}" cy="${y}" r="5"/><circle cx="${x + 8}" cy="${y}" r="5"/><circle cx="${x + 4}" cy="${y + 8}" r="5"/></g>`)
+          .map(
+            ([x, y]) =>
+              `<g fill="#8d7fd1"><circle cx="${x}" cy="${y}" r="5"/><circle cx="${x + 8}" cy="${y}" r="5"/><circle cx="${x + 4}" cy="${y + 8}" r="5"/></g>`,
+          )
           .join('') +
         ground(330, C.mint, 0) +
         jelly(118, 336, { s: 1.15, color: 'peach', face: 'calm', arms: 'rup', acc: hat.robe(C.gold) + hat.flowers() }) +
@@ -763,7 +913,13 @@ const pentacles = {
       bg('mint') +
         ground(320, C.mint, 10) +
         [30, 62, 194, 226].map((x, i) => flower(x, 360, 1, i % 2 ? C.pink : '#fff')).join('') +
-        jelly(128, 346, { s: 1.15, color: 'peach', face: 'surprised', arms: 'up', acc: `<path d="M-30,-78 Q0,-104 30,-78Z" fill="${C.red}"/>` }) +
+        jelly(128, 346, {
+          s: 1.15,
+          color: 'peach',
+          face: 'surprised',
+          arms: 'up',
+          acc: `<path d="M-30,-78 Q0,-104 30,-78Z" fill="${C.red}"/>`,
+        }) +
         pentacle(128, 178, 40),
     ),
   'pentacles-12-knight': () =>
@@ -782,7 +938,14 @@ const pentacles = {
         `<path d="M0,40 Q128,80 256,40" stroke="${C.leaf}" stroke-width="6" fill="none"/>` +
         `<rect x="56" y="130" width="144" height="200" rx="16" fill="#d6d1ea"/>` +
         ground(330, C.mint, 0) +
-        jelly(128, 330, { s: 1.15, color: 'peach', face: 'calm', arms: 'front', under: hat.veil(C.mint), acc: hat.tiara() }) +
+        jelly(128, 330, {
+          s: 1.15,
+          color: 'peach',
+          face: 'calm',
+          arms: 'front',
+          under: hat.veil(C.mint),
+          acc: hat.tiara(),
+        }) +
         pentacle(128, 318, 24) +
         rabbit(214, 364, 1),
     ),
@@ -799,7 +962,17 @@ const pentacles = {
           color: 'purple',
           face: 'calm',
           arms: 'out',
-          acc: hat.crown() + [[-24, -20], [0, -12], [24, -20], [-12, -28], [12, -28]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" fill="#ffc7e3" opacity=".7"/>`).join(''),
+          acc:
+            hat.crown() +
+            [
+              [-24, -20],
+              [0, -12],
+              [24, -20],
+              [-12, -28],
+              [12, -28],
+            ]
+              .map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" fill="#ffc7e3" opacity=".7"/>`)
+              .join(''),
         }) +
         pentacle(178, 290, 26) +
         `<path d="M70,300 L64,214" stroke="${C.goldD}" stroke-width="5" stroke-linecap="round"/><circle cx="64" cy="210" r="8" fill="${C.gold}" stroke="${C.goldD}" stroke-width="2"/>`,
