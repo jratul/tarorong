@@ -26,10 +26,10 @@ const MAJORS: [slug: string, numeral: string, nameKo: string, nameEn: string][] 
 ]
 
 export const SUITS: SuitInfo[] = [
-  { id: 'wands', nameKo: '완드', nameEn: 'Wands', element: '불' },
-  { id: 'cups', nameKo: '컵', nameEn: 'Cups', element: '물' },
-  { id: 'swords', nameKo: '소드', nameEn: 'Swords', element: '공기' },
-  { id: 'pentacles', nameKo: '펜타클', nameEn: 'Pentacles', element: '흙' },
+  { id: 'wands', nameKo: '완드', nameEn: 'Wands', element: '불', theme: '열정과 행동' },
+  { id: 'cups', nameKo: '컵', nameEn: 'Cups', element: '물', theme: '감정과 관계' },
+  { id: 'swords', nameKo: '소드', nameEn: 'Swords', element: '공기', theme: '생각과 갈등' },
+  { id: 'pentacles', nameKo: '펜타클', nameEn: 'Pentacles', element: '흙', theme: '현실과 돈' },
 ]
 
 const RANKS: [slug: string, numeral: string, nameKo: string, nameEn: string][] = [
