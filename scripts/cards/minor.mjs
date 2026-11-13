@@ -121,7 +121,7 @@ const palmHand = (x, y) =>
 const stuckSword = (tx, ty, len, a = 0, s = 0.75) => {
   const r = (a * Math.PI) / 180
   const L = len * s
-  return sword(tx - L * Math.sin(r) * -1, ty - L * Math.cos(r), len, 180 + a, s)
+  return sword(tx + L * Math.sin(r), ty - L * Math.cos(r), len, 180 + a, s)
 }
 const coinsArc = (n, y0, amp, r, x0 = 30, x1 = 226) =>
   Array.from({ length: n }, (_, i) => {

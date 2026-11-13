@@ -287,3 +287,11 @@ scripts/
   `D:/`와 `d:/`로 이중 로드해 모든 테스트가 `Cannot read properties of undefined (reading 'config')`로 깨진다
 - **Edge 헤드리스로 화면 캡처할 때 창 폭은 최소 504px**로 그려진다. 390px로 지정해도 504px로 렌더링하고 잘라서 찍으니
   모바일 확인은 504px로 찍는다
+
+---
+
+## 12. 참고 문서
+
+- [README.md](README.md) — 프로젝트 소개, 시작하기, 기술적 하이라이트
+- [TECH.md](TECH.md) — 파일별로 어떤 기술을 어떻게 썼는지 (코드 예시 포함). 파일을 추가·변경하면 함께 갱신한다
+- [PROJECT.md](PROJECT.md) — 설정 파일 역할과 패키지별 사용처. 패키지를 추가·제거하면 함께 갱신한다
