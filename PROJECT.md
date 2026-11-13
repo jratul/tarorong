@@ -10,25 +10,37 @@
 ### `react-router.config.ts` — 렌더링 방식
 
 `ssr: false`로 서버 없이 정적 배포하고, 내용이 고정된 페이지만 빌드 시 HTML로 미리 만든다(prerender).
-카드 목록을 `app/data/cards.ts`에서 가져오므로 카드가 바뀌면 prerender 경로도 자동으로 따라간다.
+카드·스프레드 목록을 `app/data/`에서 가져오므로 데이터가 바뀌면 prerender 경로도 자동으로 따라간다.
+뽑기 화면은 카드 뒷면만 보여서 덱이 무작위여도 HTML이 같아 스프레드별로 prerender한다.
 
 ```ts
 export default {
   ssr: false,
-  prerender: ['/', '/cards', ...CARDS.map((card) => `/cards/${card.id}`)],
+  prerender: [
+    '/',
+    '/cards',
+    ...CARDS.map((card) => `/cards/${card.id}`),
+    '/draw',
+    ...SPREADS.map((spread) => `/draw/${spread.id}`),
+  ],
 } satisfies Config
 ```
 
-빌드 결과: `build/client`에 HTML 80개 + prerender하지 않은 경로용 `__spa-fallback.html`.
+빌드 결과: `build/client`에 HTML 85개 + prerender하지 않은 경로(결과 화면)용 `__spa-fallback.html`.
 
 ### `vite.config.ts` — 빌드
 
 Tailwind v4 Vite 플러그인과 React Router 플러그인. `resolve.tsconfigPaths`로 tsconfig의 `~/*` alias를 Vite가 읽는다.
+`assetsInlineLimit`로 **폰트 파일은 base64 인라인을 막는다**. 기본값(4KB 이하 인라인)이면 한글 폰트의 작은 조각 수백 개가
+CSS에 박혀 CSS가 200KB 가까이 되고, `unicode-range`로 필요한 조각만 받는 이점도 사라진다.
 
 ```ts
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter()],
   resolve: { tsconfigPaths: true },
+  build: {
+    assetsInlineLimit: (file) => (/\.(woff2?|ttf|otf)$/.test(file) ? false : undefined),
+  },
 })
 ```
 
@@ -120,13 +132,23 @@ React Refresh 경고에서 제외한다.
 ### `vercel.json` — 배포
 
 Vercel은 실제 파일을 먼저 찾고, 없을 때만 rewrite를 적용한다. 그래서 prerender된 HTML은 그대로 나가고
-나머지 경로(`/draw` 등)만 SPA 폴백으로 간다.
+나머지 경로(`/result` 등)만 SPA 폴백으로 간다. 해시가 붙은 `/assets/*`는 1년 immutable, 카드 SVG는 하루 캐시.
 
 ```json
 {
   "buildCommand": "npm run build",
   "outputDirectory": "build/client",
-  "rewrites": [{ "source": "/(.*)", "destination": "/__spa-fallback.html" }]
+  "rewrites": [{ "source": "/(.*)", "destination": "/__spa-fallback.html" }],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/cards/(.*)\\.svg",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }]
+    }
+  ]
 }
 ```
 
