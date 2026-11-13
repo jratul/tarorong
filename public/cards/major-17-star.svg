@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 372">
+  <!-- 주인공: 커다란 팔각 별 / 보조: 연못에 물을 붓는 아이 -->
+  <defs>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1640"/>
+      <stop offset="1" stop-color="#3b2f78"/>
+    </linearGradient>
+    <radialGradient id="halo">
+      <stop offset="0" stop-color="#ffe9a6" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#ffe9a6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <path id="s8" d="M0,-10 L1.9,-4.6 L7.07,-7.07 L4.6,-1.9 L10,0 L4.6,1.9 L7.07,7.07 L1.9,4.6 L0,10 L-1.9,4.6 L-7.07,7.07 L-4.6,1.9 L-10,0 L-4.6,-1.9 L-7.07,-7.07 L-1.9,-4.6Z"/>
+    <g id="jug">
+      <path d="M11,-6 q9,3 5,12" fill="none" stroke-width="3" stroke-linecap="round"/>
+      <path d="M-5,-14 L5,-14 L4,-8 Q14,-3 12,5 Q10,14 0,14 Q-10,14 -12,5 Q-14,-3 -4,-8Z"/>
+      <ellipse cx="0" cy="-14" rx="7" ry="2.5"/>
+    </g>
+  </defs>
+  <rect width="256" height="372" fill="url(#night)"/>
+  <g fill="#fff" opacity=".5">
+    <circle cx="26" cy="40" r="1.4"/><circle cx="230" cy="34" r="1.4"/><circle cx="20" cy="190" r="1.2"/>
+    <circle cx="236" cy="200" r="1.2"/><circle cx="60" cy="250" r="1"/><circle cx="200" cy="246" r="1"/>
+  </g>
+
+  <!-- 큰 별 -->
+  <circle cx="128" cy="128" r="96" fill="url(#halo)"/>
+  <use href="#s8" transform="translate(128,128) scale(7.4)" fill="#ffe9a6" filter="url(#glow)"/>
+  <use href="#s8" transform="translate(128,128) scale(3)" fill="#fff7d1"/>
+
+  <!-- 연못 -->
+  <path d="M0,306 Q128,286 256,306 L256,372 L0,372Z" fill="#7cc4f0"/>
+  <path d="M30,344 q14,-5 28,0 M190,350 q14,-5 28,0" stroke="#fff" stroke-width="2" fill="none" opacity=".55" stroke-linecap="round"/>
+
+  <!-- 물줄기 -->
+  <path d="M70,290 Q58,298 56,314" stroke="#b9e6ff" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M186,290 Q198,298 200,314" stroke="#b9e6ff" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="56" cy="318" rx="11" ry="3" fill="none" stroke="#fff" stroke-width="1.5" opacity=".7"/>
+  <ellipse cx="200" cy="318" rx="11" ry="3" fill="none" stroke="#fff" stroke-width="1.5" opacity=".7"/>
+
+  <!-- 별의 아이 -->
+  <path d="M100,308 C97,272 110,250 128,250 C146,250 159,272 156,308 Q128,314 100,308Z" fill="#e6dcff"/>
+  <path d="M114,276 q5,5 10,0 M132,276 q5,5 10,0" stroke="#1e1a3a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <ellipse cx="110" cy="286" rx="6.5" ry="3.6" fill="#ffb1d6"/>
+  <ellipse cx="146" cy="286" rx="6.5" ry="3.6" fill="#ffb1d6"/>
+  <path d="M125,287 q3,3 6,0" stroke="#1e1a3a" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- 물병 두 개 -->
+  <use href="#jug" transform="translate(82,284) rotate(-120)" fill="#ffe9a6" stroke="#e3b45a" stroke-width="1.5"/>
+  <use href="#jug" transform="translate(174,284) rotate(120)" fill="#ffe9a6" stroke="#e3b45a" stroke-width="1.5"/>
+</svg>

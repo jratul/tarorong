@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 372">
+  <!-- 주인공: 넘쳐흐르는 커다란 컵 하나 / 보조: 구름에서 나온 손 -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9ecff"/>
+      <stop offset="1" stop-color="#f1ebff"/>
+    </linearGradient>
+    <path id="spark" d="M0,-7 Q1.2,-1.2 7,0 Q1.2,1.2 0,7 Q-1.2,1.2 -7,0 Q-1.2,-1.2 0,-7Z"/>
+  </defs>
+  <rect width="256" height="372" fill="url(#sky)"/>
+
+  <!-- 연못 -->
+  <path d="M0,320 Q128,302 256,320 L256,372 L0,372Z" fill="#8ccdf2"/>
+
+  <!-- 넘쳐흐르는 물 -->
+  <g stroke="#7cc4f0" stroke-width="5" fill="none" stroke-linecap="round">
+    <path d="M72,104 Q38,120 32,322"/>
+    <path d="M80,116 Q60,180 62,318"/>
+    <path d="M176,116 Q196,180 194,318"/>
+    <path d="M184,104 Q218,120 224,322"/>
+  </g>
+
+  <!-- 컵 -->
+  <path d="M66,100 L190,100 Q186,184 128,198 Q70,184 66,100Z" fill="#ffe9a6" stroke="#e3b45a" stroke-width="3"/>
+  <ellipse cx="128" cy="100" rx="62" ry="12" fill="#fff3c9" stroke="#e3b45a" stroke-width="3"/>
+  <ellipse cx="128" cy="100" rx="52" ry="7.5" fill="#9fd8ff"/>
+  <path d="M100,94 q8,-14 18,-4 M138,90 q10,-12 18,2" stroke="#7cc4f0" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M128,172 C104,154 110,134 128,147 C146,134 152,154 128,172Z" fill="#ffb1d6"/>
+  <rect x="120" y="196" width="16" height="40" fill="#ffe9a6" stroke="#e3b45a" stroke-width="2.5"/>
+  <ellipse cx="128" cy="214" rx="13" ry="7" fill="#ffe9a6" stroke="#e3b45a" stroke-width="2.5"/>
+  <path d="M92,268 Q128,238 164,268Z" fill="#ffe9a6" stroke="#e3b45a" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- 구름에서 나온 손 -->
+  <path d="M146,268 Q176,266 206,262 L208,284 Q176,284 146,282Z" fill="#fff4ea" stroke="#f0d9c8" stroke-width="2"/>
+  <path d="M90,270 Q92,286 128,286 Q160,286 162,272 Q150,264 128,265 Q104,265 90,270Z" fill="#fff4ea" stroke="#f0d9c8" stroke-width="2"/>
+  <g fill="#fff4ea" stroke="#f0d9c8" stroke-width="2">
+    <circle cx="96" cy="265" r="7"/><circle cx="108" cy="262" r="7"/><circle cx="120" cy="261" r="7"/>
+  </g>
+  <g fill="#fff">
+    <circle cx="208" cy="272" r="18"/><circle cx="228" cy="260" r="21"/><circle cx="250" cy="274" r="18"/><circle cx="228" cy="284" r="17"/>
+  </g>
+
+  <g fill="#fff">
+    <use href="#spark" transform="translate(128,46)"/>
+    <use href="#spark" transform="translate(40,62) scale(.7)"/>
+    <use href="#spark" transform="translate(216,56) scale(.8)"/>
+  </g>
+</svg>

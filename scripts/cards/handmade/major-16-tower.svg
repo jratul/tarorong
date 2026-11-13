@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 372">
+  <!-- 주인공: 번개 맞는 탑 / 보조: 날아가는 왕관, 창문의 불길 -->
+  <defs>
+    <linearGradient id="storm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f0c22"/>
+      <stop offset="1" stop-color="#3a2d72"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <path id="flame" d="M0,-16 Q10,-4 7,4 Q0,11 -7,4 Q-10,-4 0,-16Z"/>
+  </defs>
+  <rect width="256" height="372" fill="url(#storm)"/>
+
+  <!-- 바위 -->
+  <path d="M20,372 Q60,334 92,330 L164,330 Q196,334 236,372Z" fill="#4b3f86"/>
+
+  <!-- 탑 -->
+  <rect x="88" y="112" width="80" height="222" rx="12" fill="#d9cffb"/>
+  <path d="M80,120 L80,94 L95,94 L95,105 L110,105 L110,94 L125,94 L125,105 L131,105 L131,94 L146,94 L146,105 L161,105 L161,94 L176,94 L176,120Z" fill="#e6dcff"/>
+  <path d="M132,94 L122,118 L136,136 L118,170" stroke="#2c2652" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 창문 + 불길 -->
+  <g fill="#2c2652">
+    <path d="M114,214 L114,194 Q128,176 142,194 L142,214Z"/>
+    <path d="M114,334 L114,306 Q128,290 142,306 L142,334Z"/>
+  </g>
+  <use href="#flame" transform="translate(128,190) scale(1.3)" fill="#ff9f6b"/>
+  <use href="#flame" transform="translate(128,194) scale(.7)" fill="#ffe9a6"/>
+  <use href="#flame" transform="translate(98,88) scale(1.4)" fill="#ff9f6b"/>
+  <use href="#flame" transform="translate(98,92) scale(.7)" fill="#ffe9a6"/>
+
+  <!-- 번개 -->
+  <polyline points="250,10 206,62 226,68 176,112 192,116 156,140" fill="none" stroke="#ffe9a6" stroke-width="13" stroke-linejoin="round" stroke-linecap="round" filter="url(#glow)"/>
+  <polyline points="250,10 206,62 226,68 176,112 192,116 156,140" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- 날아가는 왕관 -->
+  <g transform="translate(52,62) rotate(-28) scale(1.7)">
+    <path d="M-16,8 L-16,-6 L-8,2 L0,-10 L8,2 L16,-6 L16,8Z" fill="#ffe9a6" stroke="#e3b45a" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="0" cy="3" r="2.5" fill="#ffb1d6"/>
+  </g>
+  <path d="M80,74 l14,6 M78,88 l12,2" stroke="#ffe9a6" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg>
