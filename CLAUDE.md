@@ -36,7 +36,8 @@
   - 밝은 젤리 위 텍스트는 항상 ink `#1e1a3a`
   - 반경 12~32px + pill, 글로우 그림자(gold/pink), 배경에 별 점 패턴
   - 카드 비율 3:5
-- **네비게이션**: 웹은 상단 `topnav`, 모바일은 **하단 고정 탭바** + 페이지별 `m-header`(뒤로가기)
+- **네비게이션**: 웹은 상단 `topnav`. 모바일은 시안의 하단 탭바 대신 **햄버거 메뉴**를 쓴다(메뉴 확장 대비, 전역 룰 7번).
+  상단 헤더 = 뒤로가기(하위 화면) + 페이지 제목 + 햄버거 버튼. 링크를 누르면 메뉴가 닫힌다
 - **마스코트 롱이**: 지금은 CSS 도형으로 만든 임시 버전 → 나중에 일러스트로 교체. `<Longi size mood />`
 - **컴포넌트 매핑**: `.ref/README.md`의 "클래스 → React 컴포넌트 제안" 표를 따른다
   (`Button`, `Chip`, `Segmented`, `Longi`, `SpeechBubble`, `TarotCard`, `SpreadItem`, `Keyword`, `CardFan` …)
@@ -195,7 +196,7 @@ app/                    React Router framework mode
   root.tsx, routes.ts
   routes/               home, cards, card-detail, draw, result
   components/
-    layout/             AppNav(상단/하단 탭바), MobileHeader, ScrollToTop
+    layout/             AppNav(웹 상단 / 모바일 햄버거), MobileHeader, ScrollToTop
     ui/                 Button, Chip, Segmented, Keyword, SpeechBubble, Panel
     longi/              Longi, LongiGuide
     card/               TarotCard, CardBack, CardImage, Lightbox
@@ -231,7 +232,8 @@ scripts/                download-cards.mjs, generate-icons.mjs
 
 - [ ] 자체 카드 일러스트: 샘플 몇 장을 보고 스타일 확정
 - [ ] prerender 도입 최종 확정
-- [ ] 모바일 네비: 하단 탭바(홈·도감·뽑기) + 보조 메뉴는 "더보기"로 분리하는 안 vs 햄버거 메뉴
+- [ ] 오늘의 카드를 사람마다 다르게 할지, 한다면 시드를 무엇으로 할지
+- 샘플: `.ref/card-samples/` (바보·탑·별·컵 에이스, 미리보기 `index.html`)
 
 ---
 
