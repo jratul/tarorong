@@ -1,16 +1,23 @@
-import { Link, NavLink } from 'react-router'
+import { Link } from 'react-router'
 import { NAV_ITEMS } from '~/data/nav'
 import { useMenuToggle } from '~/hooks/useMenuToggle'
+import { isNavActive } from '~/utils/routeTransition'
 
-const desktopLink = ({ isActive }: { isActive: boolean }) =>
+const desktopLink = (isActive: boolean) =>
   `rounded-full px-4 py-2 font-display text-base transition-colors ${
     isActive ? 'bg-gold text-ink' : 'text-cream/80 hover:text-gold'
   }`
 
-const mobileLink = ({ isActive }: { isActive: boolean }) =>
+const mobileLink = (isActive: boolean) =>
   `block rounded-2xl px-4 py-3 font-display text-lg ${isActive ? 'bg-gold text-ink' : 'text-cream hover:bg-white/10'}`
 
-export function AppNav() {
+interface Props {
+  /** 강조할 경로. 페이지 전환 중이면 목적지라서, 누르는 즉시 강조가 옮겨간다 */
+  activePath: string
+}
+
+// NavLink의 isActive는 이동이 끝나야 바뀌므로 쓰지 않고, 레이아웃이 넘겨준 activePath로 판단한다
+export function AppNav({ activePath }: Props) {
   const { open, toggle, close } = useMenuToggle()
 
   return (
@@ -21,11 +28,19 @@ export function AppNav() {
         </Link>
 
         <nav aria-label="주 메뉴" className="hidden items-center gap-1 lg:flex">
-          {NAV_ITEMS.map((item) => (
-            <NavLink key={item.to} to={item.to} end={item.to === '/'} className={desktopLink}>
-              {item.label}
-            </NavLink>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const active = isNavActive(activePath, item.to)
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                aria-current={active ? 'page' : undefined}
+                className={desktopLink(active)}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
         </nav>
 
         <button
@@ -51,11 +66,20 @@ export function AppNav() {
 
       {open && (
         <nav id="mobile-menu" aria-label="주 메뉴" className="border-t border-white/10 px-4 pt-2 pb-4 lg:hidden">
-          {NAV_ITEMS.map((item) => (
-            <NavLink key={item.to} to={item.to} end={item.to === '/'} className={mobileLink} onClick={close}>
-              {item.label}
-            </NavLink>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const active = isNavActive(activePath, item.to)
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                aria-current={active ? 'page' : undefined}
+                className={mobileLink(active)}
+                onClick={close}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
         </nav>
       )}
     </header>

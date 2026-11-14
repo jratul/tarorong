@@ -106,16 +106,18 @@ button:not(:disabled) {
 
 ## 라우트 (`app/routes/`)
 
-### `layout.tsx` — 공통 레이아웃
+### `layout.tsx` — 공통 레이아웃 (전환 중 메뉴 즉시 강조 + 스피너)
+
+처음 가는 화면은 라우트 청크를 받는 동안 주소가 바뀌지 않는다. `useRouteTransition`이 대기 중인 목적지를 읽어
+메뉴 강조는 누르는 즉시 옮기고, 느린 전환에서만 본문을 스피너로 바꾼다.
 
 ```tsx
 export default function SiteLayout() {
+  const { activePath, showSpinner } = useRouteTransition()
   return (
     <>
-      <AppNav />
-      <main className="mx-auto max-w-300 px-4 pt-6 pb-16">
-        <Outlet />
-      </main>
+      <AppNav activePath={activePath} />
+      <main className="mx-auto max-w-300 px-4 pt-6 pb-16">{showSpinner ? <RouteSpinner /> : <Outlet />}</main>
     </>
   )
 }
@@ -239,6 +241,26 @@ const { flipped, flip, flipAll, allFlipped } = useFlips(items.length)
 ### `layout/AppNav.tsx` — 웹 상단 메뉴 / 모바일 햄버거
 
 `lg`(1024px) 이상은 가로 메뉴, 미만은 햄버거 + 펼침 메뉴. 열림 상태는 `useMenuToggle`로 분리했다.
+`NavLink`의 `isActive`는 이동이 끝나야 바뀌므로 쓰지 않고, 레이아웃이 준 `activePath`로 강조와 `aria-current`를 정한다.
+
+```tsx
+const active = isNavActive(activePath, item.to)
+<Link to={item.to} aria-current={active ? 'page' : undefined} className={desktopLink(active)}>{item.label}</Link>
+```
+
+### `layout/RouteSpinner.tsx` — 전환 중 본문 스피너
+
+화면 높이를 어느 정도 차지해야 헤더만 남고 본문이 사라진 것처럼 보이지 않는다. 모션 줄이기 설정이면 돌지 않는다.
+
+```tsx
+<div role="status" aria-live="polite" className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
+  <span
+    aria-hidden="true"
+    className="size-10 animate-spin rounded-full border-4 border-white/12 border-t-gold motion-reduce:animate-none"
+  />
+  <span className="font-display text-sm text-gold">별을 불러오는 중…</span>
+</div>
+```
 
 ```tsx
 <nav aria-label="주 메뉴" className="hidden items-center gap-1 lg:flex">{/* 가로 링크 */}</nav>
@@ -547,6 +569,32 @@ if (pathname !== lastPath) {
   setLastPath(pathname)
   if (open) setOpen(false)
 }
+```
+
+### `useRouteTransition.ts` — 페이지 전환 중 상태
+
+`useNavigation()`이 `loading`이면 대기 중인 목적지를 메뉴 강조에 쓰고, 다른 종류의 화면으로 가는 이동만 스피너 대상으로 본다.
+
+```ts
+const pendingPath = navigation.state === 'loading' ? navigation.location.pathname : null
+const activePath = pendingPath ?? pathname
+const isPageChange = pendingPath !== null && !isSameRoute(pendingPath, pathname)
+const showSpinner = useDelayedFlag(isPageChange ? (navigation.location?.key ?? pendingPath) : null)
+```
+
+### `useDelayedFlag.ts` — 늦게 켜지는 플래그
+
+캐시된 전환은 수십 ms에 끝나서 매번 스피너를 띄우면 깜빡이기만 한다. 150ms 넘게 이어질 때만 true.
+effect 안에서 동기 setState를 하지 않도록(React Hooks 린트) 타이머 콜백에서 "끝난 key"만 기록하고, 현재 key와 비교한다.
+
+```ts
+const [firedKey, setFiredKey] = useState<string | null>(null)
+useEffect(() => {
+  if (key === null) return
+  const timer = setTimeout(() => setFiredKey(key), delay)
+  return () => clearTimeout(timer)
+}, [key, delay])
+return key !== null && firedKey === key
 ```
 
 ### `useCardFilter.ts` — 도감 필터·검색
@@ -888,6 +936,21 @@ export function pageMeta(title?: string, description = DEFAULT_DESCRIPTION) {
     { property: 'og:title', content: fullTitle },
     { property: 'og:description', content: description },
   ]
+}
+```
+
+### `routeTransition.ts` — 메뉴 강조·같은 화면 판정
+
+```ts
+export function isNavActive(path: string, to: string): boolean {
+  if (to === '/') return path === '/'
+  return path === to || path.startsWith(`${to}/`)
+}
+// 첫 세그먼트와 세그먼트 수가 같으면 같은 라우트: /draw/one → /draw/celtic, /cards/a → /cards/b
+export function isSameRoute(a: string, b: string): boolean {
+  const sa = a.split('/').filter(Boolean)
+  const sb = b.split('/').filter(Boolean)
+  return sa.length === sb.length && sa[0] === sb[0]
 }
 ```
 

@@ -257,13 +257,13 @@ app/
   fonts.css             웹폰트 @font-face (비동기 로드용으로 분리)
   routes/               layout, home, cards, card-detail, draw, guide, result
   components/
-    layout/             AppNav (웹 상단 / 모바일 햄버거)
+    layout/             AppNav (웹 상단 / 모바일 햄버거), RouteSpinner (전환 중 본문 스피너)
     card/               TarotCardFace, CardBack, FlipCard, Lightbox
     ui/                 Button(ButtonLink), Chip, Segmented, Keyword(KeywordList), Panel(SectionTitle)
     longi/              Longi, LongiGuide(SpeechBubble)
     reading/            SpreadItem, CardFan, SpreadSlots, ReadingItemCard(OrientationBadge), CelticLayout, LongiSummary
-  hooks/                useMenuToggle, useCardFilter, useDailyCard, useDraw, useFlips
-  utils/                formatNumber, meta, random, seededRandom, dailyCard, readingQuery, interpret, searchCards, josa
+  hooks/                useMenuToggle, useRouteTransition, useDelayedFlag, useCardFilter, useDailyCard, useDraw, useFlips
+  utils/                formatNumber, meta, random, seededRandom, dailyCard, readingQuery, interpret, searchCards, josa, routeTransition
   data/                 cards, nav, spreads, combos, guide, meanings/(define, major, wands, cups, swords, pentacles, index)
   models/               card, reading
 public/
@@ -312,6 +312,14 @@ scripts/
   - 모달/라이트박스는 `createPortal`, 방향키·휠 이동
 - 스크롤 리셋은 별도 `ScrollToTop` 대신 React Router의 `<ScrollRestoration />`(root.tsx)을 쓴다.
   새 페이지는 맨 위에서 시작하고, 뒤로 가기는 이전 위치를 복원해서 더 낫다
+- **페이지 전환 중 메뉴 즉시 강조 + 본문 스피너** (다우징덱스에서 가져온 패턴, `hooks/useRouteTransition.ts`):
+  라우트 모듈은 화면별 청크라, 처음 가는 화면은 청크를 받는 동안 React Router가 **주소를 바꾸지 않고 기다린다.**
+  그래서 `NavLink`의 `isActive`는 쓰지 않고, `useNavigation()`의 대기 중 목적지(`activePath`)로 메뉴를 강조한다.
+  본문은 다른 종류의 화면으로 150ms 넘게 걸릴 때만 `RouteSpinner`로 바꾼다
+  - **같은 라우트 안의 이동**(`/draw/one → /draw/celtic`, 라이트박스의 `/cards/a → /cards/b`)은 제외한다
+    (`utils/routeTransition.ts`의 `isSameRoute`). 안 빼면 칩·라이트박스를 누를 때마다 본문이 사라지고 라이트박스가 닫힌다
+  - `useDelayedFlag`는 effect 안에서 동기 setState를 하지 않는다(React Hooks 린트). 타이머 콜백에서 "끝난 key"만 기록하고
+    현재 key와 같을 때 true로 판단한다
 - 커밋 author는 jratul만. `Co-Authored-By` 넣지 않는다.
 - `.ref/`는 디자인 시안(로컬 전용) — git에 올리지 않는다.
 - 카드 이미지는 `loading="lazy"` + `width`/`height` 지정으로 CLS 방지. 첫 화면 카드는 `priority`(eager + `fetchPriority="high"`)
